@@ -1,0 +1,15 @@
+{
+    "version": "1.7.0", 
+    "files": [
+      {
+        "path": "public/css/three.css",
+        "url": "https://raw.githubusercontent.com/MritAseed/MRIT/refs/heads/main/public/css/three.css"
+      },
+      {
+        "path": "public/index.html", 
+        "url": "https://raw.githubusercontent.com/MritAseed/MRIT/refs/heads/main/index.js" 
+      }
+    ]
+  }
+  
+  
