@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بحث عمليات الموظفين</title>
+    <link rel="stylesheet" href="../css/three.css">
+    <link rel="stylesheet" href="../css/all.min.css">
+    <link rel="stylesheet" href="../css/seacrh_employ.css">
+</head>
+<body>
+       <header>
+                <h1>كشوفات الموضف</h1>
+        <ul>    
+            <li id="toggleSidebar"><i class="fa-regular fa-chart-bar fa-fw"></i> <p></p> </li>
+            <li><a href="../index.html"> <i class="fa-solid fa-house-chimney"></i> 
+                <p>الرئيسية</p>
+            </a></li>
+            <li><a href="employ_transaction.html"> <i class="fa-solid fa-user-plus"></i><p> ادرة حسابات الموضفين  </p> </a></li>
+            <li><a href="employ_transaction.html"> <i class="fa-solid fa-tent-arrow-left-right"></i><p> ادرة حسابات الموضفين  </p> </a></li>
+    </ul>
+    <div class="hover">
+      <div class="sidebar">
+            <h3>M_RI_T</h3>
+            <ul>
+               <li>
+                    <a href="../backup.html">
+                       <i class="fa-regular fa-credit-card fa-fw"></i>
+                       <span>النسخ الاحتايطي</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="../workTypes.html">
+                        <i class="fa-solid fa-briefcase"></i>
+                    <span> إدارة  الأعمال</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="../products.html"> 
+                        <i class="fas fa-file-invoice icon" title="إضافة فاتورة جديدة"></i>
+                        <span> اضافة فاتورة</span>
+                    </a>
+                </li>
+    
+                <li>
+                    <a id="theme-toggle"></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    </header>
+
+<div class="container twostail seacrh_employ">
+    <div class="box">
+        <label for="employee-name"> اسم الموظف <p>:</p></label>
+        <div class="lister">
+            <input type="text" id="employee-name" placeholder="أدخل اسم الموظف">
+            <div id="employee-list" class="autocomplete"></div>
+        </div>
+        <button onclick="searchTransactions()">بحث</button>
+        <div class="Nuber">
+    <div class="totals addand">
+        <h3> إضافات الاجور  <span id="total-withdraw">0</span></h3>
+        <h3> تسليم الاجور  <span id="total-deposit">0</span></h3>
+    </div>
+       
+
+        <!-- قسم الراتب الأساسي والمبلغ المستحق -->
+    <div class="totals salary-section">
+        <h3>الراتب الأساسي: <span id="basic-salary">0</span></h3>
+
+        <h3>المبلغ المستحق <span id="net-balance">0</span></h3>
+    </div>
+        </div>
+  
+    </div>
+
+
+
+    <div class="tables">
+        <h2>كشف حساب الموظف</h2>
+        <table id="transactions-table">
+            <thead>
+                <tr>
+                    <th> التحكم</th>
+                    <!-- <th>نوع العملية</th> -->
+                    <th>المبلغ</th>
+                    <th>التفاصيل</th>
+                    <th>التاريخ</th>
+                </tr>
+            </thead>
+            <tbody id="transactions-body">
+                <!-- سيتم إضافة البيانات هنا ديناميكياً -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="dialog-overlay" class="overlay" style="display: none;">
+    <div id="dialog-box" class="dialog-box">
+        <h3>تعديل العملية</h3>
+        <label>المبلغ:</label>
+        <input type="number" id="edit-amount" />
+        <label>التفاصيل:</label>
+        <input type="text" id="edit-details" />
+        <div class="dialog-buttons">
+            <button id="save-button">حفظ</button>
+            <button id="cancel-button">إلغاء</button>
+        </div>
+    </div>
+</div>
+
+<div id="delete-dialog-overlay" class="overlay" style="display: none;">
+    <div id="delete-dialog-box" class="dialog-box">
+        <h3>تأكيد حذف العملية</h3>
+        <p>هل أنت متأكد أنك تريد حذف هذه العملية؟</p>
+        <div class="dialog-buttons">
+            <button id="confirm-delete-button">تأكيد</button>
+            <button id="cancel-delete-button">إلغاء</button>
+        </div>
+    </div>
+</div>
+
+ <!--  تحميل التفضيل عند تحميل الصفحة + اضهار الجز الجانبي-->
+ <script>
+    document.getElementById("toggleSidebar").addEventListener("click", function() {
+    var sidebar = document.querySelector(".sidebar");
+    sidebar.classList.toggle("active"); // تبديل الفئة active لإظهار أو إخفاء الـ sidebar
+  });
+  
+  const toggleButton = document.getElementById('theme-toggle');
+
+    // تحميل التفضيل عند تحميل الصفحة
+    document.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.body.setAttribute('data-theme', savedTheme);
+    toggleButton.innerHTML = savedTheme === 'dark' ? '<i class="fa-solid fa-sun fa-fw"></i> <span> السمه</span>' : '<i class="fa-solid fa-moon fa-fw"></i> <span> السمه</span>';
+  });
+  
+  // تغيير التفضيل عند الضغط على الزر
+  toggleButton.addEventListener('click', () => {
+    const currentTheme = document.body.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    document.body.setAttribute('data-theme', newTheme);
+                    
+    toggleButton.innerHTML = newTheme === 'dark' ? '<i class="fa-solid fa-sun fa-fw"></i>  <span> السمه</span>' : '<i class="fa-solid fa-moon fa-fw"></i>  <span> السمه</span>';
+    localStorage.setItem('theme', newTheme);
+  });
+  
+  
+  </script>
+<!-- ********** -->
+  <!-- // إنشاء الجدول مع أزرار التحكم -->
+<script>
+
+  // إنشاء الجدول مع أزرار التحكم
+function searchTransactions() {
+    const employeeName = document.getElementById("employee-name").value.trim();
+
+    if (!employeeName) {
+        window.electronAPI.showDialogMessage("يرجى إدخال اسم الموظف.");
+        return;
+    }
+
+    fetch(`/api/financial-transactions/${employeeName}`)
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error("الموظف غير موجود أو حدث خطأ في جلب البيانات.");
+            }
+            return response.json();
+        })
+        .then((data) => {
+            const transactionsBody = document.getElementById("transactions-body");
+            transactionsBody.innerHTML = ""; // تفريغ الجدول
+
+            if (data.transactions.length === 0) {
+                window.electronAPI.showDialogMessage("لا توجد عمليات لهذا الموظف.");
+                return;
+            }
+
+            const baseSalary = data.baseSalary || 0; // الراتب الأساسي
+            let totalDeposit = 0;
+            let totalWithdraw = 0;
+
+            data.transactions.forEach(transaction => {
+                const row = document.createElement('tr');
+                row.dataset.id = transaction.id; // تخزين معرف العملية في dataset
+                const colorClass = transaction.type === 'deposit' ? 'green-text' : 'red-text';
+
+                row.innerHTML = `
+                    <td>
+                        <span class="edit" onclick="showEditDialog('${transaction.id}', '${transaction.amount}', '${transaction.details}')">
+                            <i class="fa-solid fa-pen"></i>
+                        </span>
+       <span class="delete" onclick="showDeleteDialog('${transaction.id}')"><i class="fa-regular fa-trash-can delete"></i></span>
+
+                    </td>
+                    <td class="${colorClass}">${transaction.amount}</td>
+                    <td>${transaction.details || 'لا توجد تفاصيل'}</td>
+                    <td>${transaction.date}</td>
+                `;
+
+                transactionsBody.appendChild(row);
+
+                // حساب الإجماليات
+                if (transaction.type === 'deposit') {
+                    totalDeposit += transaction.amount;
+                } else if (transaction.type === 'withdraw') {
+                    totalWithdraw += transaction.amount;
+                }
+            });
+
+            // حساب المبلغ المستحق
+            const netBalance = baseSalary + totalDeposit - totalWithdraw;
+
+            // عرض الإجماليات
+            document.querySelector('.addand').innerHTML = `
+                <h3>إضافات الأجور <span id="total-deposit">${totalDeposit.toFixed(2)}</span></h3>
+                <h3>تسليم الأجور <span id="total-withdraw">${totalWithdraw.toFixed(2)}</span></h3>
+            `;
+           document.querySelector('.salary-section').innerHTML = `
+                <h3>الراتب الأساسي: <span id="basic-salary">${baseSalary}</span></h3>
+                <h3>المبلغ المستحق: <span id="total-balance">${netBalance}</span></h3>
+            `;
+
+        })
+        .catch((error) => {
+            window.electronAPI.showDialogMessage(error.message);
+        });
+}
+</script>
+<!-- ********** -->
+ <!-- تعديل عملية -->
+<script>
+  let selectedTransactionId = null; // لتخزين معرف العملية المحددة للتعديل
+
+// عرض مربع التعديل
+function showEditDialog(id, currentAmount, currentDetails) {
+    selectedTransactionId = id; // تخزين المعرف
+    document.getElementById("edit-amount").value = currentAmount; // تعبئة الحقول الحالية
+    document.getElementById("edit-details").value = currentDetails || ""; // إذا لم توجد تفاصيل
+    document.getElementById("dialog-overlay").style.display = "flex"; // عرض مربع الحوار
+}
+
+// إغلاق مربع التعديل
+function closeEditDialog() {
+    selectedTransactionId = null;
+    document.getElementById("dialog-overlay").style.display = "none";
+}
+
+// حفظ التعديلات
+function saveEdit() {
+    const newAmount = document.getElementById("edit-amount").value;
+    const newDetails = document.getElementById("edit-details").value;
+
+    if (!newAmount) {
+        window.electronAPI.showDialogMessage("يرجى إدخال مبلغ صحيح.");
+        return;
+    }
+
+    fetch(`/api/financial-transactions/${selectedTransactionId}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            amount: newAmount,
+            details: newDetails,
+        }),
+    })
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error("حدث خطأ أثناء تعديل العملية.");
+            }
+            return response.json();
+        })
+        .then((data) => {
+            window.electronAPI.showDialogMessage(data.message);
+            // تحديث الصف في الجدول
+            const row = document.querySelector(`tr[data-id='${selectedTransactionId}']`);
+            if (row) {
+                row.cells[1].textContent = newAmount;
+                row.cells[2].textContent = newDetails || "لا توجد تفاصيل";
+            }
+            closeEditDialog(); // إغلاق مربع الحوار
+        })
+        .catch((error) => {
+            console.error("Error:", error);
+            window.electronAPI.showDialogMessage("حدث خطأ أثناء محاولة تعديل العملية.");
+        });
+}
+
+document.getElementById("save-button").addEventListener("click", saveEdit);
+document.getElementById("cancel-button").addEventListener("click", closeEditDialog);
+
+</script>
+
+ <!-- حذف عملية -->
+<script>
+ let transactionToDelete = null; // لتخزين معرف العملية المطلوب حذفها
+
+// عرض مربع الحوار للحذف
+function showDeleteDialog(id) {
+    transactionToDelete = id; // تخزين معرف العملية المراد حذفها
+    document.getElementById("delete-dialog-overlay").style.display = "flex"; // عرض مربع الحوار
+}
+
+// إغلاق مربع الحوار للحذف
+function closeDeleteDialog() {
+    transactionToDelete = null;
+    document.getElementById("delete-dialog-overlay").style.display = "none"; // إخفاء مربع الحوار
+}
+
+// تأكيد الحذف
+function confirmDelete() {
+    if (!transactionToDelete) {
+        window.electronAPI.showDialogMessage("معرف العملية غير متوفر.");
+        return;
+    }
+
+    fetch(`/api/financial-transactions/${transactionToDelete}`, {
+        method: "DELETE",
+    })
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error("حدث خطأ أثناء حذف العملية.");
+            }
+            return response.json();
+        })
+        .then((data) => {
+            window.electronAPI.showDialogMessage(data.message);
+            // إزالة الصف من الجدول
+            const row = document.querySelector(`tr[data-id='${transactionToDelete}']`);
+            if (row) {
+                row.remove();
+            }
+            closeDeleteDialog(); // إغلاق مربع الحوار بعد الحذف
+        })
+        .catch((error) => {
+            console.error("Error:", error);
+            window.electronAPI.showDialogMessage("حدث خطأ أثناء محاولة حذف العملية.");
+        });
+}
+
+// ربط أزرار مربع الحوار للحذف
+document.getElementById("confirm-delete-button").addEventListener("click", confirmDelete);
+document.getElementById("cancel-delete-button").addEventListener("click", closeDeleteDialog);
+
+</script>
+
+ <!-- // تابع لجلب أسماء الموظفين وإظهار النتائج -->
+<script>
+  document.getElementById("employee-name").addEventListener("input", async function() {
+    const query = this.value.trim();
+    const listContainer = document.getElementById("employee-list");
+
+    if (query.length > 0) {
+      try {
+        const response = await fetch(`/api/get-employees`);
+        const employeeNames = await response.json();
+
+        // تصفية الأسماء المطابقة
+        const filteredNames = employeeNames.filter(name => name.includes(query));
+
+        // تحديث القائمة
+        listContainer.innerHTML = "";
+        if (filteredNames.length > 0) {
+          listContainer.style.display = "block";
+          filteredNames.forEach(name => {
+            const item = document.createElement("div");
+            item.className = "employee-item";
+            item.textContent = name;
+            item.onclick = () => {
+              document.getElementById("employee-name").value = name;
+              listContainer.style.display = "none";
+            };
+            listContainer.appendChild(item);
+          });
+        } else {
+          listContainer.style.display = "none";
+        }
+      } catch (error) {
+        console.error("Error fetching employee names:", error);
+      }
+    } else {
+      listContainer.style.display = "none";
+    }
+  });
+
+  // إخفاء القائمة عند الضغط خارجها
+  document.addEventListener("click", (e) => {
+    if (!document.getElementById("employee-name").contains(e.target)) {
+      document.getElementById("employee-list").style.display = "none";
+    }
+  });
+</script>
+
+</body>
+</html>

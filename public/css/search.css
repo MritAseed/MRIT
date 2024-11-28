@@ -1,0 +1,202 @@
+:root {
+  --body-color: #eee;
+  --background-color: white;
+  --back-button-color:#00BCD4;
+  --text-color: black;
+  --bordr-buttom-color: #6db3b3;
+  --border-color:#322f2f;
+}
+
+[data-theme="dark"] {
+  --body-color: #25252c;
+  --background-color: #181a1e;
+  --back-button-color:#1976D2;
+
+  --text-color: white;
+  --bordr-buttom-color: #e8efef;
+  --border-color:#f0f0f0;
+} 
+ 
+ 
+
+.search .box form {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+.search .box  label {
+    width: 25%;
+}
+.search .box .lister {
+    position: relative;
+    width: 70%;
+}
+
+.search form button {
+        margin: 100px auto 0;
+}
+.Nuber {
+        width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.search .box  .addand { 
+     display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+        margin-top: 20px;
+}
+
+.Nuber  h3 {
+    width: fit-content;
+    font-size: 10px;
+    width: 40%;
+        padding: 6px 0;
+        background-color: var(--background-color);
+}
+.Nuber h3 span,
+.Nuber .addand h3 span {
+display: block;
+}
+/* .search  */
+.search .addand h5,
+.search  h5 {
+   font-size: 12px;
+    width: 100%;
+    text-align: start;
+    padding-right: 8px;
+    margin: 4px 0;
+    border: none;
+
+}
+.search .box .totel { 
+    width: 100%;
+        width: 70%;
+    padding: 6px 0;
+    margin-top: 20px;
+    /* margin-bottom: 10px; */
+    border: 1px solid #F44336;
+    border-radius: 6px;
+    box-shadow: 0 0 4px 0px #E91E63;
+}
+.addand h3:first-child {
+        border: 1px solid #FF9800;
+    border-radius: 6px;
+    box-shadow: 0 0 4px 0px #FF9800;
+}
+.addand h3:last-child {
+        border: 1px solid #009688;
+    border-radius: 6px;
+    box-shadow: 0 0 4px 0px #009688;
+}
+.search .bottom {
+      padding: 4px 2px;
+    font-size: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: white;
+    font-weight: 800;
+    width: 30%;
+    background-color: var(--back-button-color);
+    cursor: pointer;
+ box-shadow: 0 0 2px 1px var(--bordr-buttom-color);
+    margin: 100px auto 0;
+}
+
+/* ====================================== */
+
+/* ====================================== */
+
+.search table thead tr th:first-child {
+    width: 18%;
+}
+.search table thead tr th:nth-child(2) {
+    width: 14%;
+}
+
+.search table thead tr th:nth-child(3) {
+    width: 34%;
+}
+.search table thead tr th:nth-child(4) {
+    width: 16%;
+}
+.search table thead tr th:last-child {
+    width: 18%;
+}
+
+.search table tbody tr td {
+    font-size: 12px;
+}
+.search table tbody tr td:first-child {
+        width: 18%;
+    display: table-cell;
+    background-color: var(--back-button-color);
+    text-align: center;
+        border: 1px solid white;
+
+}
+.search table tbody tr td:nth-child(2) {
+    width: 14%;
+}
+.search table tbody tr td:nth-child(3) {
+    font-size: 10px;
+    text-align: start;
+    padding-right: 2px;
+    width: 34%;
+}
+
+        .search table tbody tr .red-text {
+    color: #F44336;
+}
+.search table tbody tr .green-text {
+    color: #009688;
+}
+
+.search table tbody tr td:nth-child(4) {
+    width: 16%;
+    font-size: 11px;
+}
+.search table tbody tr td:last-child {
+    width: 18%;
+    font-size: 11px;
+
+}
+
+.box h5 span {
+    margin-right: 10px;
+}
+
+.search .box .addand h3 span {
+    font-size: 14px;
+}
+
+#totalAdditions {
+    color: #FF9800;
+}
+#totalPayments {
+    color: #009688;
+}
+
+
+h3 span {
+    color: #E91E63;
+    margin: 0 10px;
+    font-size: 14px;
+}
+
+        #pdfControls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        iframe {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ccc;
+        }
+
+
+
+

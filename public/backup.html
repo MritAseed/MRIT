@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة النسخ الاحتياطية</title>
+    <link rel="stylesheet" href="css/all.min.css">
+    <!-- <link rel="stylesheet" href="css/all.min.css"> -->
+    <link rel="stylesheet" href="css/three.css">
+    <link rel="stylesheet" href="css/backup.css">
+</head>
+<body>
+<!-- <header>
+        <h1>إدارة النسخ الاحتياطية</h1>
+
+    <ul>
+        <li><a href="index.html">الصفحة الرئيسية</a></li>
+            <li><a href="transaction.html">إضافة أو تسديد مبلغ</a></li>
+        <li><a href="/search.html">  تفاصيل حسابات العملاء </a></li>
+        <li><a href="/workTypes.html"> إدارة  الأعمال</a></li>
+        <li><a href="/products.html"> اضافة معاملات نقد  </a></li>
+    </ul>
+<button id="theme-toggle"></button>
+
+</header> -->
+
+<header>
+    <h1>ادرة التخزين والبيانات  <i class="fa-regular fa-credit-card fa-fw"></i></h1>
+    
+    <ul>
+        <li id="toggleSidebar"><i class="fa-regular fa-chart-bar fa-fw"></i> <p></p> </li>
+        <li>
+          <a href="index.html">
+             <i class="fa-solid fa-house-chimney"></i> 
+            <p>الرئيسية</p>
+        </a>
+      </li>
+      <li><a href="/products.html"> 
+        <i class="fas fa-file-invoice icon" title="إضافة فاتورة جديدة"></i>
+        <p>اضافة فاتورة</p>
+      </a>
+    </li>
+        <li>
+            <a href="/workTypes.html">
+                  <i class="fa-solid fa-briefcase"></i>
+              <p> إدارة  الأعمال</p>
+            </a>
+          </li>
+    </ul>
+
+<div class="hover">
+    <div class="sidebar">
+      <h3>M_RI_T</h3>
+        <ul>
+            <li>
+                <a href="add_delete.html">
+                    <i class="fa-solid fa-user-plus"></i>
+                    <span>ادرة العملاء</span>
+                </a>
+            </li>
+            <li>
+                <a href="Employees/employee.html">
+                    <i class="fa-regular fa-circle-user fa-fw"></i>
+                    <span>ادرة الموظفين</span>
+                </a>
+            </li>
+            <li>
+                <a id="theme-toggle"></a>
+            </li>
+        </ul>
+    </div>
+  </div>
+
+</header>
+
+<div class="container backup">
+    <div class="box">
+ <div class="san">
+    <div class="creet">
+        <p> إنشاء نسخة احتياطية للبيانات </p>
+        
+        <button onclick="createBackup()" >
+        <i class="fas fa-copy icon" title="نسخ" ></i>
+    </button>
+
+    </div>
+  <div class="exss">
+    <input type="file" id="backupFile" style="display: none;" accept=".sqlite">
+    <p> استيراد نسخة احتياطية للبيانات </p>
+    <button onclick="document.getElementById('backupFile').click()">
+        <i class="fas fa-file-import icon" title="استيراد"></i>
+    </button>
+  </div>
+<!-- </div> -->
+<!-- <div class="box"> -->
+ </div>
+
+ <div class="san">
+        <div class="marg">
+    <p> دمج نسخة احتياطية فوق النسخة الحالية </p>
+
+            <button id="mergeButton" onclick="handleMergeClick()"><i class="fas fa-object-group icon" title="دمج"></i></button>
+        </div>
+        <div class="bootm">
+            <p>حذف جميع البيانات</p>
+            <button onclick="deleteData()"><i class="fas fa-trash-alt icon" title="حذف"></i></button> <!-- زر جديد لحذف البيانات -->
+        </div>
+ </div>
+
+    </div>
+</div>
+<script>
+    document.getElementById("toggleSidebar").addEventListener("click", function() {
+    var sidebar = document.querySelector(".sidebar");
+    sidebar.classList.toggle("active"); // تبديل الفئة active لإظهار أو إخفاء الـ sidebar
+  });
+  
+  const toggleButton = document.getElementById('theme-toggle');
+
+    // تحميل التفضيل عند تحميل الصفحة
+    document.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.body.setAttribute('data-theme', savedTheme);
+    toggleButton.innerHTML = savedTheme === 'dark' ? '<i class="fa-solid fa-sun fa-fw"></i> <span> السمه</span>' : '<i class="fa-solid fa-moon fa-fw"></i> <span> السمه</span>';
+  });
+  
+  // تغيير التفضيل عند الضغط على الزر
+  toggleButton.addEventListener('click', () => {
+    const currentTheme = document.body.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    document.body.setAttribute('data-theme', newTheme);
+                    
+    toggleButton.innerHTML = newTheme === 'dark' ? '<i class="fa-solid fa-sun fa-fw"></i>  <span> السمه</span>' : '<i class="fa-solid fa-moon fa-fw"></i>  <span> السمه</span>';
+    localStorage.setItem('theme', newTheme);
+  });
+  
+  
+  </script>
+
+    <!-- <script>
+        let selectedFile = null;
+
+        // تشغيل زر الدمج عند اختيار ملف
+        document.getElementById('mergeBackupFile').addEventListener('change', function () {
+            selectedFile = this.files[0];
+            if (selectedFile) {
+                document.getElementById('mergeButton').disabled = false;
+            } else {
+                document.getElementById('mergeButton').disabled = true;
+            }
+        });
+
+        // دمج البيانات مع النسخة الحالية
+        function mergeBackup() {
+            if (!selectedFile) {
+                window.electronAPI.showDialogMessage("يرجى اختيار ملف النسخة الاحتياطية أولاً!");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("backupFile", selectedFile);
+
+            fetch("/api/merge", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                window.electronAPI.showDialogMessage(data.message);
+                // إعادة تعيين الحالة بعد الدمج
+                document.getElementById('mergeBackupFile').value = "";
+                document.getElementById('mergeButton').disabled = true;
+            })
+            .catch(error => {
+                console.error("Error during merge:", error);
+                window.electronAPI.showDialogMessage("حدث خطأ أثناء دمج البيانات.");
+            });
+        }
+    </script> -->
+
+    <script>
+        let selectedFile = null;
+    
+        // وظيفة استدعاء الدمج عند النقر
+        function handleMergeClick() {
+            // فتح نافذة اختيار الملف
+            const input = document.createElement("input");
+            input.type = "file";
+            input.accept = ".sqlite";
+    
+            // عند اختيار الملف
+            input.onchange = () => {
+                selectedFile = input.files[0];
+                if (selectedFile) {
+                    // تأكيد قبل الدمج
+                    const userConfirmed = confirm("سيتم دمج البيانات مع النسخة الحالية. هل تريد المتابعة؟");
+                    if (userConfirmed) {
+                        mergeBackup();
+                    }
+                } else {
+                    window.electronAPI.showDialogMessage("يرجى اختيار ملف النسخة الاحتياطية أولاً!");
+                }
+            };
+    
+            // استدعاء نافذة اختيار الملف
+            input.click();
+        }
+    
+        // دمج البيانات مع النسخة الحالية
+        function mergeBackup() {
+            if (!selectedFile) {
+                window.electronAPI.showDialogMessage("يرجى اختيار ملف النسخة الاحتياطية أولاً!");
+                return;
+            }
+    
+            const formData = new FormData();
+            formData.append("backupFile", selectedFile);
+    
+            fetch("/api/merge", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                window.electronAPI.showDialogMessage(data.message);
+                // إعادة تعيين الحالة بعد الدمج
+                selectedFile = null;
+            })
+            .catch(error => {
+                console.error("Error during merge:", error);
+                window.electronAPI.showDialogMessage("حدث خطأ أثناء دمج البيانات.");
+            });
+        }
+    </script>
+<script>
+    // دالة لإنشاء النسخة الاحتياطية
+    function createBackup() {
+        fetch('/api/backup')
+            .then(response => response.json())
+            .then(data => {
+                window.electronAPI.showDialogMessage(data.message);
+            })
+            .catch(error => {
+                console.error('Error creating backup:', error);
+                window.electronAPI.showDialogMessage('حدث خطأ أثناء إنشاء النسخة الاحتياطية');
+            });
+    }
+
+    // // دالة لاستيراد النسخة الاحتياطية باستخدام FormData
+    // document.getElementById('backupFile').addEventListener('change', function () {
+    //     const file = this.files[0];
+    //     if (file) {
+    //         const formData = new FormData();
+    //         formData.append('backupFile', file);
+
+    //         fetch('/api/restore', {
+    //             method: 'POST',
+    //             body: formData
+    //         })
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             window.electronAPI.showDialogMessage(data.message);
+    //         })
+    //         .catch(error => {
+    //             console.error('Error restoring backup:', error);
+    //             window.electronAPI.showDialogMessage('حدث خطأ أثناء استيراد النسخة الاحتياطية');
+    //         });
+    //     }
+    // });
+
+    /*  */
+    // دالة لاستيراد النسخة الاحتياطية باستخدام FormData
+document.getElementById('backupFile').addEventListener('change', function () {
+    const file = this.files[0];
+    if (file) {
+        // عرض رسالة التأكيد
+        const userConfirmed = confirm("سيتم فقدان البيانات الحالية، هل أنت متأكد أنك تريد المتابعة؟");
+        
+        if (userConfirmed) {
+            const formData = new FormData();
+            formData.append('backupFile', file);
+
+            fetch('/api/restore', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                window.electronAPI.showDialogMessage(data.message);
+            })
+            .catch(error => {
+                console.error('Error restoring backup:', error);
+                window.electronAPI.showDialogMessage('حدث خطأ أثناء استيراد النسخة الاحتياطية');
+            });
+        } else {
+            // إعادة تعيين الحقل إذا اختار المستخدم "إلغاء"
+            this.value = ''; // إزالة الملف المختار
+        }
+    }
+});
+
+    /*  */
+    // دالة لحذف بيانات الجداول
+    function deleteData() {
+        if (confirm('هل أنت متأكد أنك تريد حذف جميع البيانات؟')) {
+            fetch('/api/delete', {
+                method: 'DELETE',
+            })
+            .then(response => response.json())
+            .then(data => {
+                window.electronAPI.showDialogMessage(data.message);
+            })
+            .catch(error => {
+                console.error('Error deleting data:', error);
+                window.electronAPI.showDialogMessage('حدث خطأ أثناء حذف البيانات');
+            });
+        }
+    }
+</script>
+
+</body>
+</html>

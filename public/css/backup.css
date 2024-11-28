@@ -1,0 +1,67 @@
+:root {
+  --body-color: #eee;
+  --background-color: white;
+  --back-button-color:#00BCD4;
+  --text-color: black;
+  --bordr-buttom-color: #6db3b3;
+  --border-color:#322f2f;
+}
+
+[data-theme="dark"] {
+  --body-color: #25252c;
+  --background-color: #181a1e;
+  --back-button-color:#1976D2;
+
+  --text-color: white;
+  --bordr-buttom-color: #e8efef;
+  --border-color:#f0f0f0;
+} 
+.backup {
+    justify-content: center;
+
+}
+.backup .box {
+    width: 90%;
+   flex-direction: row;
+   flex-wrap: wrap;
+   justify-content: center;
+   
+}
+.backup .box .san {
+  width: 46%;
+  height: 100%; 
+}
+.backup .box .san > div {
+  height: 44%;
+  display: flex
+;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: var(--background-color);
+  margin: 4%;
+  border: 2px solid var(--back-button-color);
+}
+.backup .box .san > div:last-child {
+  border-top: 2px solid var(--back-button-color);
+}
+.backup .box p {
+  border: 2px solid var(--back-button-color);
+  margin: 8%;
+  background-color: var(--body-color);
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+ .backup .box button {
+  margin: 4px auto;
+  } 
+  .backup .box button:hover {
+    background-color: var(--background-color);
+  }
+.backup .box .icon {
+  font-size: 16px;
+  transition: background-color 0.3s, color 0.3s;
+}
+.backup .box button:hover:hover .icon {
+  color: var(--back-button-color);
+}

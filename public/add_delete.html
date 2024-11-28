@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> MRIT</title>
+    <link rel="stylesheet" href="css/all.min.css">
+    <link rel="stylesheet" href="css/three.css">
+    <link rel="stylesheet" href="css/add_delete.css">
+
+
+</head>
+<body>
+    <header>
+        <h1>ادرة العملاء    <i class="fa-solid fa-user-plus"></i></h1>
+        <ul>    
+                <li id="toggleSidebar"><i class="fa-regular fa-chart-bar fa-fw"></i> <p></p> </li>
+                <li><a href="index.html"> <i class="fa-solid fa-house-chimney"></i> 
+                    <p>الرئيسية</p>
+                </a></li>
+                <li><a href="transaction.html"> <i class="fa-solid fa-tent-arrow-left-right"></i>
+                    <p>
+                        ادرة حسابات العملاء
+
+                    </p> </a></li>
+                <li><a href="/search.html"> <i class="fa-solid fa-magnifying-glass"></i><p>البحث عن عميل</p></a></li>
+        </ul>
+        <div class="hover">
+          <div class="sidebar">
+                <h3>M_RI_T</h3>
+                <ul>
+                   <li>
+                        <a href="backup.html">
+                           <i class="fa-regular fa-credit-card fa-fw"></i>
+                           <span>النسخ الاحتايطي</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/workTypes.html">
+                            <i class="fa-solid fa-briefcase"></i>
+                        <span> إدارة  الأعمال</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/products.html"> 
+                            <i class="fas fa-file-invoice icon" title="إضافة فاتورة جديدة"></i>
+                            <span> اضافة فاتورة</span>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a id="theme-toggle"></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+     </header>
+
+    <div class="container add_delete">
+        <div class="box">
+            <div class="add_box">
+                 <h4 class="green">إضافة عميل</h4>
+                <form id="addCustomerForm">
+                    <label for="name">الاسم <p>:</p></label>
+                    <input type="text" id="name" required>
+                    <button type="submit" class="green">إضافة عميل</button>
+                </form>
+            </div>
+            <div class="delete_box">
+                <h4 class="red">حذف عميل</h4>
+                <form id="deleteCustomerForm">
+                    <label for="deleteName">الاسم<p>:</p></label>
+                    <div class="lister">
+                        <input type="text" id="deleteName" required>
+                        <div id="autocomplete"></div>
+                    </div>
+                    <div class="bottom">
+                    <button type="submit" class="red">حذف عميل</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="balance-table  tables">
+            <h2> قائمة العملاء</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th> الرقم </th>
+                        <th>اسم العميل</th>
+                        <th>المبلغ المستحق</th>
+                    </tr>
+                </thead>
+                <tbody id="balanceTableBody"></tbody>
+           </table>
+        </div>
+    </div>
+ <!--  تحميل التفضيل عند تحميل الصفحة + اضهار الجز الجانبي-->
+<script>
+    document.getElementById("toggleSidebar").addEventListener("click", function() {
+    var sidebar = document.querySelector(".sidebar");
+    sidebar.classList.toggle("active"); // تبديل الفئة active لإظهار أو إخفاء الـ sidebar
+  });
+  
+  const toggleButton = document.getElementById('theme-toggle');
+
+    // تحميل التفضيل عند تحميل الصفحة
+    document.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.body.setAttribute('data-theme', savedTheme);
+    toggleButton.innerHTML = savedTheme === 'dark' ? '<i class="fa-solid fa-sun fa-fw"></i> <span> السمه</span>' : '<i class="fa-solid fa-moon fa-fw"></i> <span> السمه</span>';
+  });
+  
+  // تغيير التفضيل عند الضغط على الزر
+  toggleButton.addEventListener('click', () => {
+    const currentTheme = document.body.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    document.body.setAttribute('data-theme', newTheme);
+                    
+    toggleButton.innerHTML = newTheme === 'dark' ? '<i class="fa-solid fa-sun fa-fw"></i>  <span> السمه</span>' : '<i class="fa-solid fa-moon fa-fw"></i>  <span> السمه</span>';
+    localStorage.setItem('theme', newTheme);
+  });
+  
+  
+  </script>
+
+
+<!-- اضافة عميل  -->
+<script>
+// اضافة عميل 
+document.getElementById('addCustomerForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const name = document.getElementById('name').value.trim();
+    
+    fetch('/add-customer', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name: name }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        window.electronAPI.showDialogMessage(data.message); // استبدال alert بـ showDialogMessage
+    })
+    .catch(error => {
+        // console.error('حدث خطأ:', error);
+        window.electronAPI.showDialogMessage('حدث خطأ أثناء إضافة العميل'); // استبدال alert بـ showDialogMessage
+    });
+});
+ // حذف عميل
+document.getElementById('deleteCustomerForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const name = document.getElementById('deleteName').value.trim();
+    
+    fetch('/delete-customer', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name: name }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        window.electronAPI.showDialogMessage(data.message); // استبدال alert بـ showDialogMessage
+    })
+    .catch(error => {
+        // console.error('حدث خطأ:', error);
+        window.electronAPI.showDialogMessage('حدث خطأ أثناء حذف العميل');
+    });
+});
+// الإكمال التلقائي لحقل حذف العميل
+document.getElementById('deleteName').addEventListener('input', function () {
+    const query = this.value.toLowerCase();
+    const autocompleteDiv = document.getElementById('autocomplete');
+    autocompleteDiv.innerHTML = '';
+
+    if (query) {
+        fetch('/api/get-customers')
+            .then(response => response.json())
+            .then(customers => {
+                const filteredCustomers = customers.filter(name => name.toLowerCase().includes(query));
+                filteredCustomers.forEach(customer => {
+                    const item = document.createElement('div');
+                    item.textContent = customer;
+                    item.classList.add('autocomplete-item');
+                    item.addEventListener('click', function () {
+                        document.getElementById('deleteName').value = customer;
+                        autocompleteDiv.innerHTML = '';
+                    });
+                    autocompleteDiv.appendChild(item);
+                });
+            })
+            .catch(error => console.error('Error fetching customers:', error));
+    }
+});
+</script>
+    <!-- // جلب الأرصدة وعرضها في الجدول -->
+<script>
+                    const formatNumber = (number) => {
+                        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                };
+    // جلب الأرصدة وعرضها في الجدول
+    fetch('/api/get-client-balances')
+        .then(response => response.json())
+        .then(balances => {
+            const tableBody = document.getElementById('balanceTableBody');
+            tableBody.innerHTML = ''; // تفريغ الجدول قبل العرض
+            balances.forEach((client, index) => {
+                const row = document.createElement('tr');
+            let color = client.balance > 0 ? 'red-text' : client.balance < 0 ? 'green-text' : 'black-text';
+            // let color = client.balance = 'red';
+
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${client.client_name}</td>
+                    <td class="${color}">${formatNumber(client.balance)}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        })
+        .catch(error => console.error('Error fetching client data:', error));
+</script>
+</body>
+</html>

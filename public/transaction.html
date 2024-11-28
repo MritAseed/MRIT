@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إضافة أو تسديد مبلغ</title>
+    <link rel="stylesheet" href="css/three.css">
+    <link rel="stylesheet" href="css/transaction.css">
+    <link rel="stylesheet" href="css/all.min.css">
+</head>
+<body>
+    <header>
+        <h1>إضافة أو تسديد مبلغ<i class="fa-solid fa-tent-arrow-left-right"></i></h1>
+        <ul>
+            <li id="toggleSidebar"><i class="fa-regular fa-chart-bar fa-fw"></i> <p></p> </li>
+            <li><a href="index.html"> <i class="fa-solid fa-house-chimney"></i> 
+                <p>الرئيسية</p>
+            </a></li>
+            <li><a href="add_delete.html"><i class="fa-solid fa-user-plus"></i><p>ادرة العملاء</p></a></li>
+        <li><a href="/search.html"> <i class="fa-solid fa-magnifying-glass"></i><p>البحث عن عميل</p></a></li>
+
+  
+        </ul>
+        <div class="hover">
+            <div class="sidebar">
+                  <h3>M_RI_T</h3>
+                  <ul>
+                     <li>
+                          <a href="backup.html">
+                             <i class="fa-regular fa-credit-card fa-fw"></i>
+                             <span>النسخ الاحتايطي</span>
+                          </a>
+                      </li>
+                      <li>
+                          <a href="/workTypes.html">
+                              <i class="fa-solid fa-briefcase"></i>
+                          <span> إدارة  الأعمال</span>
+                          </a>
+                      </li>
+                      <li>
+                          <a href="/products.html"> 
+                              <i class="fas fa-file-invoice icon" title="إضافة فاتورة جديدة"></i>
+                              <span> اضافة فاتورة</span>
+                          </a>
+                      </li>
+  
+                      <li>
+                          <a id="theme-toggle"></a>
+                      </li>
+                  </ul>
+              </div>
+          </div>
+    </header>
+
+    <div class="container transaction">
+        <div class="box trans">
+            <form id="transactionForm">
+ <div class="box_inp">
+                   <label for="name">اسم العميل <p>:</p></label>
+                <div class="lister">
+                    <input type="text" id="name" required>
+                    <div id="autocomplete"></div>
+                </div>
+                <label for="details" class="biglab">التفاصيل<p>:</p></label>
+                <!-- <textarea id="details" required ></textarea> -->
+                <input type="text" id="details">
+                
+                <label for="amount">المبلغ <p>:</p></label>
+                <input type="number" id="amount" required>
+                
+ </div>
+              
+              
+              
+                <div class="poTyp">
+                    <label class="lpchild">نوع العملية</label>
+                    <div class="radio-group">
+                       <div class="addTyp">
+                        
+                        <label for="add">
+                             <input type="radio" id="add" name="transactionType" value="add" required>إضافة مبلغ
+                        </label>
+                       </div>
+
+                      <div class="payTyp">
+                          
+                        <label for="pay"> <input type="radio" id="pay" name="transactionType" value="pay" required>تسديد مبلغ</label>
+                      </div>
+                    </div>
+                <button type="submit">حفظ العملية</button>
+
+                </div>
+            </form>
+        </div>
+    </div>
+ <!--  تحميل التفضيل عند تحميل الصفحة + اضهار الجز الجانبي-->
+
+    <script>
+        document.getElementById("toggleSidebar").addEventListener("click", function() {
+        var sidebar = document.querySelector(".sidebar");
+        sidebar.classList.toggle("active"); // تبديل الفئة active لإظهار أو إخفاء الـ sidebar
+      });
+      
+      const toggleButton = document.getElementById('theme-toggle');
+    
+        // تحميل التفضيل عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', () => {
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.body.setAttribute('data-theme', savedTheme);
+        toggleButton.innerHTML = savedTheme === 'dark' ? '<i class="fa-solid fa-sun fa-fw"></i> <span> السمه</span>' : '<i class="fa-solid fa-moon fa-fw"></i> <span> السمه</span>';
+      });
+      
+      // تغيير التفضيل عند الضغط على الزر
+      toggleButton.addEventListener('click', () => {
+        const currentTheme = document.body.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.body.setAttribute('data-theme', newTheme);
+                        
+        toggleButton.innerHTML = newTheme === 'dark' ? '<i class="fa-solid fa-sun fa-fw"></i>  <span> السمه</span>' : '<i class="fa-solid fa-moon fa-fw"></i>  <span> السمه</span>';
+        localStorage.setItem('theme', newTheme);
+      });
+      
+      
+      </script>
+        <!-- // وظيفة الإكمال التلقائي -->
+<script>
+
+            let selectedTransactionIndex = null;
+        // وظيفة الإكمال التلقائي
+        document.getElementById('name').addEventListener('input', function () {
+            const query = this.value.toLowerCase();
+            const autocompleteDiv = document.getElementById('autocomplete');
+            autocompleteDiv.innerHTML = '';
+
+            if (query) {
+                fetch('/api/get-customers') // جلب قائمة العملاء من الخادم
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(customers => {
+                        const filteredCustomers = customers.filter(name => name.toLowerCase().includes(query));
+                        filteredCustomers.forEach(customer => {
+                            const item = document.createElement('div');
+                            item.textContent = customer;
+                            item.classList.add('autocomplete-item');
+                            item.addEventListener('click', function () {
+                                document.getElementById('name').value = customer;
+                                autocompleteDiv.innerHTML = '';
+                            });
+                            autocompleteDiv.appendChild(item);
+                        });
+                    })
+                    .catch(error => console.error('Error fetching customers:', error));
+            }
+        });
+
+</script>
+
+<!-- ارسال العمليات -->
+    <script>
+        document.getElementById('transactionForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const amount = document.getElementById('amount').value;
+            const details = document.getElementById('details').value;
+            const transactionType = document.querySelector('input[name="transactionType"]:checked').value;
+
+            fetch('/transaction', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: name,
+                    amount: amount,
+                    details: details,
+                    transactionType: transactionType
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.electronAPI.showDialogMessage('تم حفظ العملية بنجاح!');
+                } else {
+                    window.electronAPI.showDialogMessage('حدث خطأ أثناء حفظ العملية.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                window.electronAPI.showDialogMessage('حدث خطأ أثناء الاتصال بالخادم.');
+            });
+        });
+    </script>
+
+</body>
+</html>

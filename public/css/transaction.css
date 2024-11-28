@@ -1,0 +1,138 @@
+:root {
+  --body-color: #eee;
+  --background-color: white;
+  --back-button-color:#00BCD4;
+  --text-color: black;
+  --bordr-buttom-color: #6db3b3;
+  --border-color:#322f2f;
+}
+
+[data-theme="dark"] {
+  --body-color: #25252c;
+  --background-color: #181a1e;
+  --back-button-color:#1976D2;
+
+  --text-color: white;
+  --bordr-buttom-color: #e8efef;
+  --border-color:#f0f0f0;
+} 
+
+.transaction {
+      justify-content: center;
+}
+
+.transaction .box {
+        width: 90%;
+        margin-left: 0;
+        position: relative;
+    }
+.transaction .box .box_inp {
+    width: 65%;
+    height: 100%;
+    display: flex
+;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+.transaction .box form label {
+width: 25%;
+}
+
+.transaction .box .lister {
+    width: 65%;
+}
+.transaction .box .lister input {
+    width: 100%;
+}
+
+.transaction .box input {
+    width: 65%;
+
+}
+.transaction .box .poTyp {
+    width: 37%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 0%;
+    left: 0;
+    align-items: center;
+    border-right: 2px solid var(--back-button-color);
+}
+.transaction .box form .poTyp .lpchild {
+    width: 100%;
+    font-size: 16px;
+    font-weight: 800;
+    margin: 0;
+    margin-bottom: 20%;
+    padding: 10px 0;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    border: 2px solid var(--back-button-color);
+    border-bottom-width: 3px;
+    border-top-left-radius: 8px;
+    text-align: center;
+}
+
+.transaction .poTyp  .radio-group {
+        width: 90%;
+    display: flex;
+    justify-content: space-around;
+}
+ .transaction .poTyp .radio-group div {
+     display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /* padding: 6px; */
+    width: 40%;
+    border-radius: 8px;
+    /* border: 2px solid white; */
+    cursor: pointer;
+ }
+ .transaction .poTyp .radio-group input {
+     width: 14px;
+    height: 14px;
+    margin: 0;
+    cursor: pointer;
+    
+ }
+ .transaction .poTyp .radio-group .addTyp {
+   color: #F44336;
+   background-color: var(--background-color);
+    box-shadow: 0 0 4px 1px #E91E63;
+ }
+ .transaction .poTyp .radio-group .payTyp {
+   color: #009688;
+   background-color: var(--background-color);
+    box-shadow: 0 0 4px 1px #4CAF50;
+ }
+ .transaction .poTyp .radio-group label {
+       width: 100%;
+    padding: 8px 4px;
+    font-weight: 600;
+    margin: 0;
+    /* padding: 0; */
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+ }
+.transaction .box textarea {
+    width: 60%;
+    border-radius: 8px;
+    border: 2px solid var(--back-button-color);
+    outline: none;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-size: 14px;
+    font-weight: 600;
+    padding: 4px;
+    /* height: 60px; */
+}
+.transaction .box .poTyp button {
+    margin: 25% auto 0;
+}

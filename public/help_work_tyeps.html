@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>إدارة أنواع الأعمال</title>
+  <link rel="stylesheet" href="css/three.css">
+  <link rel="stylesheet" href="css/all.min.css">
+  <link rel="stylesheet" href="css/work.css">
+</head>
+<body>
+ <header>
+  <h1>إدارة أنواع الأعمال</h1>
+        <ul>
+              <li><a href="index.html">الصفحة الرئيسية</a></li>
+            <li><a href="add_delete.html">إضافة أو حذف عميل</a></li>
+            <li><a href="transaction.html">إضافة أو تسديد مبلغ</a></li>
+        <li><a href="/search.html">  تفاصيل حسابات العملاء </a></li>
+        <li><a href="/products.html"> اضافة معاملات نقد  </a></li>
+        </ul>
+<button id="theme-toggle"></button>
+
+    </header>
+<!-- ================================================ -->
+<!-- <div class="container twostail work">
+    <div class="box">
+      <form id="workForm">
+        <label> نوع العمل <p>:</p></label>
+        <input type="text" id="workType" placeholder="نوع العمل" required />
+        <label> السعر <p>:</p></label>
+        <input type="number" id="price" placeholder="السعر" required />
+        <label> الرمز <p>:</p></label>
+        <input type="text" id="workId" placeholder="رقم تعريف العمل" required />
+        <button type="submit">إضافة العمل</button>
+      </form>
+    </div>
+    <div class="tables">
+      <h2>قائمة أنواع الأعمال</h2>
+      <table id="workTable">
+        <thead>
+          <tr>
+            <th>التحكم</th>
+            <th>الرمز</th>
+            <th>نوع العمل</th>
+            <th>السعر</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  
+
+<script>
+    const fetchWorks = async () => {
+  try {
+    const response = await fetch("http://localhost:3000/get-works");
+    const works = await response.json();
+
+    const tbody = document.querySelector("#workTable tbody");
+    tbody.innerHTML = ""; // إفراغ محتوى البودي
+
+    works.forEach((work) => {
+      const row = document.createElement("tr");
+
+      // استخدام قالب نصي لإنشاء محتوى الصف
+      row.innerHTML = `
+        <td>
+          <span class="delete-icon" onclick="deleteWork('${work.work_id}')">
+            <i class="fa-regular fa-trash-can delete"></i>
+          </span>
+          <span class="edit-icon" onclick="openEditModal('${work.work_id}', '${work.work_type}', '${work.price}')">
+            <i class="fa-solid fa-pen edit"></i>
+          </span>
+        </td>
+        <td>${work.work_id}</td>
+        <td>${work.work_type}</td>
+        <td>${work.price}</td>
+      `;
+
+      tbody.appendChild(row);
+    });
+  } catch (error) {
+    console.error("Error fetching works:", error.message);
+    window.electronAPI.showDialogMessage("خطأ في جلب أنواع الأعمال");
+  }
+};
+
+// إضافة عمل جديد
+document.getElementById("workForm").addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const workType = document.getElementById("workType").value;
+  const price = document.getElementById("price").value;
+  const workId = document.getElementById("workId").value;
+
+  try {
+    const response = await fetch("http://localhost:3000/add-work", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ work_type: workType, price: parseFloat(price), work_id: workId }),
+    });
+
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.message || "حدث خطأ أثناء الإضافة");
+    window.electronAPI.showDialogMessage(result.message);
+    fetchWorks(); // تحديث القائمة بعد الإضافة
+  } catch (error) {
+    console.error("Error:", error.message);
+    window.electronAPI.showDialogMessage("خطأ في إضافة العمل: " + error.message);
+  }
+});
+
+
+// دالة حذف نوع العمل
+const deleteWork = async (workId) => {
+  try {
+    const response = await fetch("http://localhost:3000/delete-work", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ work_id: workId }),
+    });
+
+    const result = await response.json();
+    if (response.ok) {
+      window.electronAPI.showDialogMessage(result.message);
+      fetchWorks(); // تحديث القائمة بعد الحذف
+    } else {
+      window.electronAPI.showDialogMessage(result.message || "خطأ في حذف نوع العمل");
+    }
+  } catch (error) {
+    console.error("Error deleting work:", error.message);
+    window.electronAPI.showDialogMessage("خطأ في حذف نوع العمل");
+  }
+};
+
+
+// استدعاء دالة جلب أنواع الأعمال عند تحميل الصفحة
+fetchWorks();
+
+</script> -->
+<!-- ******************************************* -->
+<!-- ================================================ -->
+<!-- <div class="container twostail work">
+    <div class="box">
+      <form id="workForm">
+        <label> نوع العمل <p>:</p></label>
+        <input type="text" id="workType" placeholder="نوع العمل" required />
+        <label> السعر <p>:</p></label>
+        <input type="number" id="price" placeholder="السعر" required />
+        <label> الرمز <p>:</p></label>
+        <input type="text" id="workId" placeholder="رقم تعريف العمل" required />
+        <button type="submit">إضافة العمل</button>
+      </form>
+    </div>
+    <div class="tables">
+      <h2>قائمة أنواع الأعمال</h2>
+      <table id="workTable">
+        <thead>
+          <tr>
+            <th>التحكم</th>
+            <th>الرمز</th>
+            <th>نوع العمل</th>
+            <th>السعر</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!- سيتم تعبئة البودي عبر JavaScript ->
+        </tbody>
+      </table>
+    </div>
+  </div> -->
+  <div class="container twostail work">
+    <div class="box">
+      <form id="workForm">
+        <label> نوع العمل <p>:</p></label>
+        <input type="text" id="workType" placeholder="نوع العمل" required />
+        <label> السعر <p>:</p></label>
+        <input type="number" id="price" placeholder="السعر" required />
+        <label> الرمز <p>:</p></label>
+        <input type="text" id="workId" placeholder="رقم تعريف العمل" required />
+        <button type="submit">إضافة العمل</button>
+      </form>
+    </div>
+    <div class="tables">
+      <h2>قائمة أنواع الأعمال</h2>
+      <table id="workTable">
+        <thead>
+          <tr>
+            <th>التحكم</th>
+            <th>الرمز</th>
+            <th>نوع العمل</th>
+            <th>السعر</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- سيتم تعبئة البودي عبر JavaScript -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+  <!-- مربع التعديل (Modal) -->
+  <div id="editModal" class="overlay" style="display: none;">
+    <div class="modal-content edit-box">
+      <h2>تعديل العمل</h2>
+      <form id="editForm">
+        <label> نوع العمل <p>:</p></label>
+        <input type="text" id="editWorkType" required />
+        <label> السعر <p>:</p></label>
+        <input type="number" id="editPrice" required />
+        <label> الرمز <p>:</p></label>
+        <input type="text" id="editWorkId" disabled />
+        <div class="edit-buttons">
+            <button type="submit">تعديل</button>
+      <span class="close" onclick="closeEditModal()">الغاء</span>
+
+            <!-- <button onclick="closeEditModal()"&times;>الغاء</button> -->
+        </div>
+        
+      </form>
+    </div>
+  </div>
+  
+  <!-- <style>
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  
+    .modal-content {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      width: 400px;
+      text-align: center;
+      position: relative;
+    }
+  
+    /* .close {
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      font-size: 24px;
+      cursor: pointer;
+    }
+  
+    .close:hover {
+      color: red;
+    } */
+  </style> -->
+  
+  <script>
+    let editingWorkId = null;
+  
+    // دالة فتح مربع التعديل
+    const openEditModal = (workId, workType, price) => {
+      document.getElementById("editWorkType").value = workType;
+      document.getElementById("editPrice").value = price;
+      document.getElementById("editWorkId").value = workId;
+      editingWorkId = workId;
+  
+      // عرض المربع
+      document.getElementById("editModal").style.display = "flex";
+    };
+  
+    // دالة إغلاق مربع التعديل
+    const closeEditModal = () => {
+      document.getElementById("editModal").style.display = "none";
+    };
+  
+    // دالة تعديل العمل
+    document.getElementById("editForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+  
+      const workType = document.getElementById("editWorkType").value;
+      const price = document.getElementById("editPrice").value;
+      closeEditModal();
+  
+      try {
+        const response = await fetch("http://localhost:3000/update-work", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ work_id: editingWorkId, work_type: workType, price: parseFloat(price) }),
+        });
+  
+        const result = await response.json();
+        if (response.ok) {
+          window.electronAPI.showDialogMessage(result.message);
+          fetchWorks(); // تحديث القائمة بعد التعديل
+        } else {
+          throw new Error(result.message || "حدث خطأ أثناء التعديل");
+        }
+      } catch (error) {
+        console.error("Error updating work:", error.message);
+        window.electronAPI.showDialogMessage("خطأ في تعديل نوع العمل");
+      }
+
+    });
+  
+    // دالة جلب البيانات وعرضها
+    // const fetchWorks = async () => {
+    //   try {
+    //     const response = await fetch("http://localhost:3000/get-works");
+    //     const works = await response.json();
+  
+    //     const tbody = document.querySelector("#workTable tbody");
+    //     tbody.innerHTML = ""; // إفراغ محتوى البودي
+  
+    //     works.forEach((work) => {
+    //       const row = document.createElement("tr");
+  
+    //       row.innerHTML = `
+    //         <td>
+    //           <span class="delete-icon" onclick="deleteWork('${work.work_id}')">
+    //             <i class="fa-regular fa-trash-can delete"></i>
+    //           </span>
+    //           <span class="edit-icon" onclick="openEditModal('${work.work_id}', '${work.work_type}', '${work.price}')">
+    //             <i class="fa-solid fa-pen edit"></i>
+    //           </span>
+    //         </td>
+    //         <td>${work.work_id}</td>
+    //         <td>${work.work_type}</td>
+    //         <td>${work.price}</td>
+    //       `;
+  
+    //       tbody.appendChild(row);
+    //     });
+    //   } catch (error) {
+    //     console.error("Error fetching works:", error.message);
+    //     window.electronAPI.showDialogMessage("خطأ في جلب أنواع الأعمال");
+    //   }
+    // };
+  
+    // // استدعاء دالة جلب أنواع الأعمال عند تحميل الصفحة
+    // fetchWorks();
+  </script>
+  
+  <script>
+    const fetchWorks = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/get-works");
+        const works = await response.json();
+  
+        const tbody = document.querySelector("#workTable tbody");
+        tbody.innerHTML = ""; // إفراغ محتوى البودي
+  
+        works.forEach((work) => {
+          const row = document.createElement("tr");
+  
+          row.innerHTML = `
+            <td>
+              <span class="delete-icon" onclick="deleteWork('${work.work_id}')">
+                <i class="fa-regular fa-trash-can delete"></i>
+              </span>
+              <span class="edit-icon" onclick="openEditModal('${work.work_id}', '${work.work_type}', '${work.price}')">
+                <i class="fa-solid fa-pen edit"></i>
+              </span>
+            </td>
+            <td>${work.work_id}</td>
+            <td>${work.work_type}</td>
+            <td>${work.price}</td>
+          `;
+  
+          tbody.appendChild(row);
+        });
+      } catch (error) {
+        console.error("Error fetching works:", error.message);
+        window.electronAPI.showDialogMessage("خطأ في جلب أنواع الأعمال");
+      }
+    };
+  
+    // دالة فتح نافذة التعديل
+  /*   const openEditModal = (workId, workType, price) => {
+      // فتح نافذة إدخال جديدة
+      const newWorkType = prompt("أدخل نوع العمل الجديد:", workType);
+      if (newWorkType === null) return; // المستخدم ألغى التعديل
+  
+      const newPrice = prompt("أدخل السعر الجديد:", price);
+      if (newPrice === null || isNaN(newPrice)) {
+        alert("يجب إدخال سعر صالح!");
+        return;
+      }
+  
+      updateWork(workId, newWorkType, parseFloat(newPrice));
+    };
+  
+    // دالة تعديل نوع العمل
+    const updateWork = async (workId, workType, price) => {
+      try {
+        const response = await fetch("http://localhost:3000/update-work", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ work_id: workId, work_type: workType, price }),
+        });
+  
+        const result = await response.json();
+        if (response.ok) {
+          window.electronAPI.showDialogMessage(result.message);
+          fetchWorks(); // تحديث القائمة بعد التعديل
+        } else {
+          throw new Error(result.message || "حدث خطأ أثناء التعديل");
+        }
+      } catch (error) {
+        console.error("Error updating work:", error.message);
+        window.electronAPI.showDialogMessage("خطأ في تعديل نوع العمل");
+      }
+    };
+   */
+    // إضافة عمل جديد
+    document.getElementById("workForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+  
+      const workType = document.getElementById("workType").value;
+      const price = document.getElementById("price").value;
+      const workId = document.getElementById("workId").value;
+  
+      try {
+        const response = await fetch("http://localhost:3000/add-work", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ work_type: workType, price: parseFloat(price), work_id: workId }),
+        });
+  
+        const result = await response.json();
+        if (response.ok) {
+          window.electronAPI.showDialogMessage(result.message);
+          document.getElementById("workForm").reset();
+          fetchWorks(); // تحديث القائمة بعد الإضافة
+        } else {
+          throw new Error(result.message || "حدث خطأ أثناء الإضافة");
+        }
+      } catch (error) {
+        console.error("Error:", error.message);
+        window.electronAPI.showDialogMessage("خطأ في إضافة العمل: " + error.message);
+      }
+    });
+  
+    // دالة حذف نوع العمل
+    const deleteWork = async (workId) => {
+      if (!confirm("هل أنت متأكد من حذف هذا العمل؟")) return;
+  
+      try {
+        const response = await fetch("http://localhost:3000/delete-work", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ work_id: workId }),
+        });
+  
+        const result = await response.json();
+        if (response.ok) {
+          window.electronAPI.showDialogMessage(result.message);
+          fetchWorks(); // تحديث القائمة بعد الحذف
+        } else {
+          throw new Error(result.message || "خطأ في حذف نوع العمل");
+        }
+      } catch (error) {
+        console.error("Error deleting work:", error.message);
+        window.electronAPI.showDialogMessage("خطأ في حذف نوع العمل");
+      }
+    };
+  
+    // استدعاء دالة جلب أنواع الأعمال عند تحميل الصفحة
+    fetchWorks();
+  </script>
+  
+<!-- ================================================ -->
+<!-- <script>
+    const fetchWorks = async () => {
+  try {
+    const response = await fetch("http://localhost:3000/get-works");
+    const works = await response.json();
+
+    const tbody = document.querySelector("#workTable tbody");
+    tbody.innerHTML = ""; // إفراغ محتوى البودي
+
+    works.forEach((work) => {
+      const row = document.createElement("tr");
+
+      // استخدام قالب نصي لإنشاء محتوى الصف
+      row.innerHTML = `
+        <td>
+          <span class="delete-icon" onclick="deleteWork('${work.work_id}')">
+            <i class="fa-regular fa-trash-can delete"></i>
+          </span>
+        </td>
+        <td>${work.work_id}</td>
+        <td>${work.work_type}</td>
+        <td>${work.price}</td>
+      `;
+
+      tbody.appendChild(row);
+    });
+  } catch (error) {
+    console.error("Error fetching works:", error.message);
+    window.electronAPI.showDialogMessage("خطأ في جلب أنواع الأعمال");
+  }
+};
+
+// دالة حذف نوع العمل
+const deleteWork = async (workId) => {
+  try {
+    const response = await fetch("http://localhost:3000/delete-work", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ work_id: workId }),
+    });
+
+    const result = await response.json();
+    if (response.ok) {
+      window.electronAPI.showDialogMessage(result.message);
+      fetchWorks(); // تحديث القائمة بعد الحذف
+    } else {
+      window.electronAPI.showDialogMessage(result.message || "خطأ في حذف نوع العمل");
+    }
+  } catch (error) {
+    console.error("Error deleting work:", error.message);
+    window.electronAPI.showDialogMessage("خطأ في حذف نوع العمل");
+  }
+};
+
+// إضافة عمل جديد
+document.getElementById("workForm").addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const workType = document.getElementById("workType").value;
+  const price = document.getElementById("price").value;
+  const workId = document.getElementById("workId").value;
+
+  try {
+    const response = await fetch("http://localhost:3000/add-work", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ work_type: workType, price: parseFloat(price), work_id: workId }),
+    });
+
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.message || "حدث خطأ أثناء الإضافة");
+    window.electronAPI.showDialogMessage(result.message);
+    fetchWorks(); // تحديث القائمة بعد الإضافة
+  } catch (error) {
+    console.error("Error:", error.message);
+    window.electronAPI.showDialogMessage("خطأ في إضافة العمل: " + error.message);
+  }
+});
+
+// استدعاء دالة جلب أنواع الأعمال عند تحميل الصفحة
+fetchWorks();
+
+</script>   -->
+
+<!-- 
+  <div id="editModal" class="modal">
+    <div class="modal-content">
+      <h2>تعديل نوع العمل</h2>
+      <form id="editWorkForm" onsubmit="event.preventDefault(); editWork();">
+        <label>رقم تعريف العمل:</label>
+        <input type="text" id="editWorkId" readonly />
+        <label>نوع العمل:</label>
+        <input type="text" id="editWorkType" required />
+        <label>السعر:</label>
+        <input type="number" id="editPrice" required />
+        <div class="modal-buttons">
+          <button type="submit">حفظ التعديلات</button>
+          <button type="button" onclick="closeEditModal()">إلغاء</button>
+        </div>
+      </form>
+    </div>
+  </div>
+-->
+
+<script>
+    /* 
+    const openEditModal = (workId, workType, price) => {
+  // تعبئة البيانات في النموذج
+  document.getElementById("editWorkId").value = workId;
+  document.getElementById("editWorkType").value = workType;
+  document.getElementById("editPrice").value = price;
+
+  // عرض نافذة التعديل
+  document.getElementById("editModal").style.display = "block";
+};
+ */
+
+/* 
+// دالة تعديل العمل
+// const editWork = async () => {
+//   const workId = document.getElementById("editWorkId").value;
+//   const workType = document.getElementById("editWorkType").value;
+//   const price = document.getElementById("editPrice").value;
+
+//   try {
+//     const response = await fetch("http://localhost:3000/edit-work", {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify({ work_id: workId, work_type: workType, price: parseFloat(price) }),
+//     });
+
+//     const result = await response.json();
+//     if (response.ok) {
+//       window.electronAPI.showDialogMessage(result.message);
+//       fetchWorks(); // تحديث القائمة بعد التعديل
+//       closeEditModal(); // إغلاق نافذة التعديل
+//     } else {
+//       window.electronAPI.showDialogMessage(result.message || "خطأ في تعديل نوع العمل");
+//     }
+//   } catch (error) {
+//     console.error("Error editing work:", error.message);
+//     window.electronAPI.showDialogMessage("خطأ في تعديل نوع العمل");
+//   }
+// };
+
+// async function updateWork(workId) {
+//   const workType = document.getElementById("editWorkType").value; // حقل نوع العمل
+//   const price = document.getElementById("editPrice").value; // حقل السعر
+
+//   try {
+//     const response = await fetch("http://localhost:3000/update-work", {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify({ work_id: workId, work_type: workType, price: parseFloat(price) }),
+//     });
+
+//     const result = await response.json();
+//     if (!response.ok) throw new Error(result.message || "حدث خطأ أثناء التعديل");
+
+//     alert(result.message); // عرض رسالة النجاح
+//     fetchWorks(); // تحديث القائمة بعد التعديل
+//   } catch (error) {
+//     console.error("Error updating work:", error.message);
+//     alert("خطأ في تعديل العمل: " + error.message);
+//   }
+// }
+
+async function updateWork(workId) {
+  const workType = document.getElementById("editWorkType").value; // حقل نوع العمل
+  const price = document.getElementById("editPrice").value; // حقل السعر
+
+  try {
+    const response = await fetch("http://localhost:3000/update-work", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ work_id: workId, work_type: workType, price: parseFloat(price) }),
+    });
+
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.message || "حدث خطأ أثناء التعديل");
+
+    alert(result.message); // عرض رسالة النجاح
+    fetchWorks(); // تحديث القائمة بعد التعديل
+  } catch (error) {
+    console.error("Error updating work:", error.message);
+    alert("خطأ في تعديل العمل: " + error.message);
+  }
+}
+
+// دالة إغلاق نافذة التعديل
+const closeEditModal = () => {
+  document.getElementById("editModal").style.display = "none";
+};
+ */
+</script>
+
+
+
+
+
+
+
+
+
+
+
+    <script>
+        const toggleButton = document.getElementById('theme-toggle');
+      
+      // تحميل التفضيل عند تحميل الصفحة
+      
+      document.addEventListener('DOMContentLoaded', () => {
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.body.setAttribute('data-theme', savedTheme);
+        toggleButton.innerHTML = savedTheme === 'dark' ? '<i class="fa-regular fa-sun"></i>' : '<i class="fa-regular fa-moon"></i>';
+      });
+      
+      // تغيير التفضيل عند الضغط على الزر
+      toggleButton.addEventListener('click', () => {
+        const currentTheme = document.body.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.body.setAttribute('data-theme', newTheme);
+        toggleButton.innerHTML = newTheme === 'dark' ? '<i class="fa-regular fa-sun"></i>' : '<i class="fa-regular fa-moon"></i> ';
+        localStorage.setItem('theme', newTheme);
+      });
+      
+      
+      </script>
+      
+      </body>
+      </html>

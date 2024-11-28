@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>إدارة أنواع الأعمال</title>
+  <link rel="stylesheet" href="css/three.css">
+  <link rel="stylesheet" href="css/all.min.css">
+  <link rel="stylesheet" href="css/work.css">
+</head>
+<body>
+        <header>
+  <h1>إدارة أنواع الأعمال</h1>
+        <ul>
+          <li id="toggleSidebar"><i class="fa-regular fa-chart-bar fa-fw"></i> <p></p> </li>
+          <li>
+            <a href="index.html">
+               <i class="fa-solid fa-house-chimney"></i> 
+              <p>الرئيسية</p>
+          </a>
+        </li>
+        <li><a href="/products.html"> 
+          <i class="fas fa-file-invoice icon" title="إضافة فاتورة جديدة"></i>
+          <p>اضافة فاتورة</p>
+        </a>
+      </li>
+
+        <li>
+          <a href="backup.html">
+             <i class="fa-regular fa-credit-card "></i>
+             <p>النسخ الاحتايطي</p>
+          </a>
+      </li>
+  </ul>
+        <div class="hover">
+          <div class="sidebar">
+            <h3>M_RI_T</h3>
+            <ul>
+              <li>
+                <a href="add_delete.html">
+                    <i class="fa-solid fa-user-plus"></i>
+                    <span>ادرة العملاء</span>
+                </a>
+            </li>
+            <li>
+                <a href="Employees/employee.html">
+                    <i class="fa-regular fa-circle-user fa-fw"></i>
+                    <span>ادرة الموظفين</span>
+                </a>
+            </li>
+            <li>
+                <a id="theme-toggle"></a>
+            </li>        
+            </ul>
+          </div>
+           </div>
+        </header>
+        <div class="container twostail work">
+          <div class="box">
+            <form id="workForm">
+              <label> نوع العمل <p>:</p></label>
+              <input type="text" id="workType" placeholder="نوع العمل" required />
+              <label> السعر <p>:</p></label>
+              <input type="number" id="price" placeholder="السعر" required />
+              <label> الرمز <p>:</p></label>
+              <input type="text" id="workId" placeholder="رقم تعريف العمل" required />
+              <button type="submit">إضافة العمل</button>
+            </form>
+          </div>
+          <div class="tables">
+            <h2>قائمة أنواع الأعمال</h2>
+            <table id="workTable">
+              <thead>
+                <tr>
+                  <th>التحكم</th>
+                  <th>الرمز</th>
+                  <th>نوع العمل</th>
+                  <th>السعر</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- سيتم تعبئة البودي عبر JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        <!-- مربع التعديل (Modal) -->
+        <div id="editModal" class="overlay" style="display: none;">
+          <div class="modal-content edit-box">
+            <h2>تعديل العمل</h2>
+            <form id="editForm">
+              <label> نوع العمل <p>:</p></label>
+              <input type="text" id="editWorkType" required />
+              <label> السعر <p>:</p></label>
+              <input type="number" id="editPrice" required />
+              <label> الرمز <p>:</p></label>
+              <input type="text" id="editWorkId" disabled />
+              <div class="edit-buttons">
+                  <button type="submit">تعديل</button>
+            <span class="close" onclick="closeEditModal()">الغاء</span>
+      
+                  <!-- <button onclick="closeEditModal()"&times;>الغاء</button> -->
+              </div>
+              
+            </form>
+          </div>
+        </div>
+        <script>
+          document.getElementById("toggleSidebar").addEventListener("click", function() {
+          var sidebar = document.querySelector(".sidebar");
+          sidebar.classList.toggle("active"); // تبديل الفئة active لإظهار أو إخفاء الـ sidebar
+        });
+        
+        const toggleButton = document.getElementById('theme-toggle');
+      
+          // تحميل التفضيل عند تحميل الصفحة
+          document.addEventListener('DOMContentLoaded', () => {
+          const savedTheme = localStorage.getItem('theme') || 'light';
+          document.body.setAttribute('data-theme', savedTheme);
+          toggleButton.innerHTML = savedTheme === 'dark' ? '<i class="fa-solid fa-sun fa-fw"></i> <span> السمه</span>' : '<i class="fa-solid fa-moon fa-fw"></i> <span> السمه</span>';
+        });
+        
+        // تغيير التفضيل عند الضغط على الزر
+        toggleButton.addEventListener('click', () => {
+          const currentTheme = document.body.getAttribute('data-theme');
+          const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+          document.body.setAttribute('data-theme', newTheme);
+                          
+          toggleButton.innerHTML = newTheme === 'dark' ? '<i class="fa-solid fa-sun fa-fw"></i>  <span> السمه</span>' : '<i class="fa-solid fa-moon fa-fw"></i>  <span> السمه</span>';
+          localStorage.setItem('theme', newTheme);
+        });
+        
+        
+        </script>
+
+<script>
+     let editingWorkId = null;
+  
+  // دالة فتح مربع التعديل
+  const openEditModal = (workId, workType, price) => {
+    document.getElementById("editWorkType").value = workType;
+    document.getElementById("editPrice").value = price;
+    document.getElementById("editWorkId").value = workId;
+    editingWorkId = workId;
+
+    // عرض المربع
+    document.getElementById("editModal").style.display = "flex";
+  };
+
+  // دالة إغلاق مربع التعديل
+  const closeEditModal = () => {
+    document.getElementById("editModal").style.display = "none";
+  };
+
+  // دالة تعديل العمل
+  document.getElementById("editForm").addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const workType = document.getElementById("editWorkType").value;
+    const price = document.getElementById("editPrice").value;
+    closeEditModal();
+
+    try {
+      const response = await fetch("http://localhost:3000/update-work", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ work_id: editingWorkId, work_type: workType, price: parseFloat(price) }),
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        window.electronAPI.showDialogMessage(result.message);
+        fetchWorks(); // تحديث القائمة بعد التعديل
+      } else {
+        throw new Error(result.message || "حدث خطأ أثناء التعديل");
+      }
+    } catch (error) {
+      console.error("Error updating work:", error.message);
+      window.electronAPI.showDialogMessage("خطأ في تعديل نوع العمل");
+    }
+
+  });
+
+</script>
+
+<script>
+  // دالة لجلب الاعمال 
+  const fetchWorks = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/get-works");
+        const works = await response.json();
+  
+        const tbody = document.querySelector("#workTable tbody");
+        tbody.innerHTML = ""; // إفراغ محتوى البودي
+  
+        works.forEach((work) => {
+          const row = document.createElement("tr");
+  
+          row.innerHTML = `
+            <td>
+              <span class="delete-icon" onclick="deleteWork('${work.work_id}')">
+                <i class="fa-regular fa-trash-can delete"></i>
+              </span>
+              <span class="edit-icon" onclick="openEditModal('${work.work_id}', '${work.work_type}', '${work.price}')">
+                <i class="fa-solid fa-pen edit"></i>
+              </span>
+            </td>
+            <td>${work.work_id}</td>
+            <td>${work.work_type}</td>
+            <td>${work.price}</td>
+          `;
+  
+          tbody.appendChild(row);
+        });
+      } catch (error) {
+        console.error("Error fetching works:", error.message);
+        window.electronAPI.showDialogMessage("خطأ في جلب أنواع الأعمال");
+      }
+    };
+
+     // إضافة عمل جديد
+     document.getElementById("workForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+  
+      const workType = document.getElementById("workType").value;
+      const price = document.getElementById("price").value;
+      const workId = document.getElementById("workId").value;
+  
+      try {
+        const response = await fetch("http://localhost:3000/add-work", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ work_type: workType, price: parseFloat(price), work_id: workId }),
+        });
+  
+        const result = await response.json();
+        if (response.ok) {
+          window.electronAPI.showDialogMessage(result.message);
+          document.getElementById("workForm").reset();
+          fetchWorks(); // تحديث القائمة بعد الإضافة
+        } else {
+          throw new Error(result.message || "حدث خطأ أثناء الإضافة");
+        }
+      } catch (error) {
+        console.error("Error:", error.message);
+        window.electronAPI.showDialogMessage("خطأ في إضافة العمل: " + error.message);
+      }
+    });
+  
+    // دالة حذف نوع العمل
+    const deleteWork = async (workId) => {
+      if (!confirm("هل أنت متأكد من حذف هذا العمل؟")) return;
+  
+      try {
+        const response = await fetch("http://localhost:3000/delete-work", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ work_id: workId }),
+        });
+  
+        const result = await response.json();
+        if (response.ok) {
+          window.electronAPI.showDialogMessage(result.message);
+          fetchWorks(); // تحديث القائمة بعد الحذف
+        } else {
+          throw new Error(result.message || "خطأ في حذف نوع العمل");
+        }
+      } catch (error) {
+        console.error("Error deleting work:", error.message);
+        window.electronAPI.showDialogMessage("خطأ في حذف نوع العمل");
+      }
+    };
+  
+    // استدعاء دالة جلب أنواع الأعمال عند تحميل الصفحة
+    fetchWorks();
+</script>
+
+</body>
+</html>

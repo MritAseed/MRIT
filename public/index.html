@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MRIT</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/all.min.css">
+</head>
+<body>
+
+    <header>
+        <h1>الصفحة الرئيسية</h1>
+<div class="hover">
+  <div class="icon">
+    <i class="fa-regular fa-chart-bar fa-fw" id="toggleSidebar"></i>
+  </div>
+  <div class="sidebar">
+    <h3>M_RI_T</h3>
+    <ul>
+      <!-- باقي العناصر... -->
+                         <li>
+                  <a   href="backup.html">
+                    <i class="fa-regular fa-credit-card fa-fw"></i>
+                    <span>النسخ الاحتايطي</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="/workTypes.html">
+                        <i class="fa-solid fa-briefcase"></i>
+                    <span> إدارة  الأعمال</span>
+                  </a>
+                </li>
+                <li>
+                  <a id="theme-toggle"></a>
+
+                </li>
+
+    </ul>
+  </div>
+</div>
+
+
+    </header>
+    <div class="Numbr">
+          عدد العملاء :
+        <p id="customerCount">عدد العملاء: جارٍ التحميل...</p>
+    </div>
+
+
+<div class="container">
+    <ul>
+                    <i class="fa-regular fa-user fa-fw"></i>
+
+        <li>
+          <a href="/add_delete.html">  ادرة العملاء</a></li>
+        <li><a href="/transaction.html"> ادرة حسبات العملاء    </a></li>
+        <li><a href="/search.html">  بحث عن  العملاء </a></li>
+    </ul>
+    <ul>
+              <li><a href="/products.html"> اضافة معاملات نقد  </a></li>
+              <li><a href="#">   صندوق المصروفات  </a></li>
+    </ul>
+
+        <ul>
+                    <i class="fa-regular fa-circle-user fa-fw"></i>
+        <li>
+          <a href="Employees/employee.html"> إدارة  الموضفين</a></li>
+        <li><a href="Employees/employ_transaction.html">   ادرة حسبات الموضفين </a></li>
+        <li><a href="Employees/seacrh_employ.html">  بحث عن الموضفين </a></li>
+    </ul>
+
+ <!--  تحميل التفضيل عند تحميل الصفحة + اضهار الجز الجانبي-->
+  <script>
+          document.getElementById("toggleSidebar").addEventListener("click", function() {
+        var sidebar = document.querySelector(".sidebar");
+        sidebar.classList.toggle("active"); // تبديل الفئة active لإظهار أو إخفاء الـ sidebar
+              });
+        const toggleButton = document.getElementById('theme-toggle');
+
+      // تحميل التفضيل عند تحميل الصفحة
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.body.setAttribute('data-theme', savedTheme);
+        toggleButton.innerHTML = savedTheme === 'dark' ? '<i class="fa-solid fa-sun fa-fw"></i> <span> السمه</span>' : '<i class="fa-solid fa-moon fa-fw"></i> <span> السمه</span>';
+      });
+
+      // تغيير التفضيل عند الضغط على الزر
+      toggleButton.addEventListener('click', () => {
+        const currentTheme = document.body.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.body.setAttribute('data-theme', newTheme);
+                        
+        toggleButton.innerHTML = newTheme === 'dark' ? '<i class="fa-solid fa-sun fa-fw"></i>  <span> السمه</span>' : '<i class="fa-solid fa-moon fa-fw"></i>  <span> السمه</span>';
+        localStorage.setItem('theme', newTheme);
+      });
+  </script>
+    <!-- دالة لجلب عدد العملاء -->
+    <script>
+        async function updateCustomerCount() {
+      try {
+        const response = await fetch("/get-customer-count");
+        if (!response.ok) {
+          throw new Error("خطأ في جلب عدد العملاء");
+        }
+        const data = await response.json();
+        document.getElementById("customerCount").innerText = `${data.count}`;
+      } catch (error) {
+        console.error(error);
+        document.getElementById("customerCount").innerText = "فشل في جلب عدد العملاء";
+      }
+    }
+
+    // استدعاء الدالة لتحديث العدد عند تحميل الصفحة
+    window.onload = updateCustomerCount;
+
+    </script>
+
+
+</div>
+</body>
+</html>

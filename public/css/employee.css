@@ -1,0 +1,218 @@
+/* .employee  {
+    display: flex;
+    justify-content: space-between;
+    height: 80vh;
+} */
+
+.employee .box {
+    overflow: hidden;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+.employee .box label {
+    width: 30%;
+}
+.employee .box input {
+    border-radius: 6px;
+    border: 2px solid var(--back-button-color);
+    background-color: var(--background-color);
+    padding: 2px 5px;
+    outline: none;
+    width: 60%;
+    color: var(--text-color);
+}
+.employee .box button {
+    padding: 4px 0px;
+    font-size: 14px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: white;
+    font-weight: 800;
+    width: 35%;
+    /* margin: 0 auto; */
+    background-color: var(--back-button-color);
+    cursor: pointer;
+    box-shadow: 0 0 2px 1px var(--bordr-buttom-color);
+}
+/* .employee .balance-table {
+    width: 60%;
+    background: var(--background-color);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 4px;
+    overflow-y: auto;
+    border: 2px solid var(--back-button-color);
+    border-radius: 10px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+} */
+.employee table {
+    width: 96%;
+    background-color: var(--body-color);
+    padding: 10px 6px;
+    border-radius: 8px;
+    border: 1px solid var(--back-button-color);
+}
+
+.employee .balance-table table thead tr th {
+    background-color: var(--back-button-color);
+    border: 2px solid white;
+    color: white;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 800;
+    text-align: center;
+
+}
+.employee .balance-table table thead tr th:first-child {
+    width: 20%;
+}
+.employee .balance-table table thead tr th:nth-child(2) {
+    width: 35%;
+}
+
+.employee .balance-table table thead tr th:nth-child(3) {
+    width: 30%;
+}
+.add_delete .balance-table table thead tr th:last-child {
+    width: 15%;
+}
+
+.employee .balance-table table tbody tr td {
+    background-color: var(--background-color);
+    border: 1.4px solid var(--back-button-color);
+    border-radius: 4px;
+    color: var(--text-color);
+    font-size: 10px;
+    font-weight: 600;
+    text-align: center;
+}
+.employee .balance-table table tr td:first-child {
+    width: 20%;
+           display: table-cell;
+    background-color: var(--back-button-color);
+    text-align: center;
+    border: 1px solid white;
+}
+
+.employee .balance-table table tbody tr td:nth-child(2) {
+    text-align: start;
+    padding-right: 8px;
+    width: 35%;
+    font-size: 10px;
+}
+.employee .balance-table table tbody tr td:nth-child(3) {
+    width: 30%;
+        text-align: start;
+    padding-right: 6px;
+}
+
+.employee .balance-table table tbody tr td:last-child {
+    width: 15%;
+    color: #F44336;
+    font-weight: 800;
+    font-size: 12px;
+}
+
+.employee table tbody tr td:first-child span {
+    color: white;
+    transition: 0.3s;
+    cursor: pointer;
+    margin: 0 10%;
+    font-size: 14px;
+}
+.employee table tbody tr td:first-child .delete-icon:hover {
+    color: #F44336;
+    font-size: 14.2px;
+}
+table tbody tr td:first-child .edit-icon:hover {
+    color: #FF9800;
+    font-size: 14.2px;
+
+}
+        /* .icon { cursor: pointer; margin: 0 5px; }
+        #confirmDialog  {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: white;
+            border: 1px solid #ccc;
+            z-index: 1000;
+            /* width: 50%;
+            height: 50%; *
+        }
+        #confirmDialog button, #updateDialog button {
+            margin: 10px 5px;
+        }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%;
+             height: 100%;
+            background: rgba(0, 0, 0, 0.494);
+            z-index: 999;
+        } */
+.edit-box,.dialog-box {
+        padding: 10px;
+    border-radius: 10px;
+    width: 400px;
+    /* text-align: start; */
+    background-color: var(--body-color);
+    border: 2px solid #1976D2;
+    text-align: center;
+}
+.edit-box h3,.dialog-box h3 {
+    font-size: 14px;
+    margin: 6px 0;
+    background-color: var(--background-color);
+    border: 2px solid var(--back-button-color);
+    color: var(--text-color);
+    width: 50%;
+    margin: 8px auto;
+    border-radius: 8px;
+    text-align: center;
+}
+.dialog-box label, .edit-box label {
+    width: 25%;
+    display: inline-block;
+    margin: 8px 0;
+    text-align: center;
+}
+.edit-box input, .dialog-box input {
+    width: 70%;
+    padding: 4px;
+    border-radius: 8px;
+    border: 2px solid var(--back-button-color);
+    padding-right: 8px;
+    font-size: 14px;
+    font-weight: 800;
+    margin: 10px 0;
+}
+.dialog-buttons, .edit-buttons {
+     display: flex;
+    justify-content: space-between;
+    margin-top: 40px;
+    padding: 0 12px;
+    background-color: var(--background-color);
+    padding: 10px 16px;
+    border: 1px solid var(--back-button-color);
+    border-radius: 8px;
+}
+.dialog-buttons button, .edit-buttons button {
+    padding: 4px 2px;
+    font-size: 12px;
+    border: 1px solid white;
+    border-radius: 6px;
+    color: white;
+    font-weight: 800;
+    width: 18%;
+    background-color: var(--back-button-color);
+    cursor: pointer;
+    box-shadow: 0 0 2px 1px azure;
+}

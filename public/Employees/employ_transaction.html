@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>عملية مالية للموظف</title>
+    <style>
+
+    </style>
+    <link rel="stylesheet" href="../css/all.min.css">
+    <link rel="stylesheet" href="../css/three.css">
+    <link rel="stylesheet" href="../css/employ_transaction.css">
+</head>
+<body>
+      <header>
+        <h1> ادرة حسابات الموضفين </h1>
+        <ul>    
+          <li id="toggleSidebar"><i class="fa-regular fa-chart-bar fa-fw"></i> <p></p> </li>
+          <li><a href="../index.html"> <i class="fa-solid fa-house-chimney"></i> 
+              <p>الرئيسية</p>
+          </a></li>
+          <li><a href="employ_transaction.html"> <i class="fa-solid fa-user-plus"></i><p> ادرة  الموضفين  </p> </a></li>
+          <li><a href="seacrh_employ.html"> <i class="fa-solid fa-magnifying-glass"></i><p>البحث عن موظف</p></a></li>
+  </ul>
+  <div class="hover">
+    <div class="sidebar">
+          <h3>M_RI_T</h3>
+          <ul>
+             <li>
+                  <a href="../backup.html">
+                     <i class="fa-regular fa-credit-card fa-fw"></i>
+                     <span>النسخ الاحتايطي</span>
+                  </a>
+              </li>
+              <li>
+                  <a href="../workTypes.html">
+                      <i class="fa-solid fa-briefcase"></i>
+                  <span> إدارة  الأعمال</span>
+                  </a>
+              </li>
+              <li>
+                  <a href="../products.html"> 
+                      <i class="fas fa-file-invoice icon" title="إضافة فاتورة جديدة"></i>
+                      <span> اضافة فاتورة</span>
+                  </a>
+              </li>
+  
+              <li>
+                  <a id="theme-toggle"></a>
+              </li>
+          </ul>
+      </div>
+  </div>
+    </header>
+    <div class="container  employee">
+        <div class="box">
+            <!-- إدخال تفاصيل العملية المالية -->
+          <div class="form-section box_inp">
+              <label for="employee-name">اسم الموظف<p>:</p></label>
+              <div class="lister">
+                  <input type="text" id="employee-name" placeholder="أدخل اسم الموظف">
+                  <div id="employee-list" class="autocomplete"></div>
+              </div>           
+              <label for="operation-details">تفاصيل العملية<p>:</p></label>
+              <textarea id="operation-details" placeholder="أدخل تفاصيل العملية"></textarea>
+              <label for="amount">المبلغ<p>:</p></label>
+              <input type="number" id="amount" placeholder="أدخل المبلغ" step="0.01">
+        </div>
+          <!-- اختيار نوع العملية -->
+
+                <div class="operation-type poTyp">
+            <label class="lpchild">نوع العملية</label>
+            <div class="options radio-group">
+                <div class="option deposit" onclick="selectOperation('deposit')"> اضافة اجور</div>
+                <div class="option withdraw" onclick="selectOperation('withdraw')">  تسليم اجور</div>
+            </div>
+            <button class="save-btn" onclick="saveOperation()">حفظ العملية</button>
+
+        </div>
+      </div>
+    </div>
+     <!--  تحميل التفضيل عند تحميل الصفحة + اضهار الجز الجانبي-->
+ <script>
+  document.getElementById("toggleSidebar").addEventListener("click", function() {
+  var sidebar = document.querySelector(".sidebar");
+  sidebar.classList.toggle("active"); // تبديل الفئة active لإظهار أو إخفاء الـ sidebar
+});
+
+const toggleButton = document.getElementById('theme-toggle');
+
+  // تحميل التفضيل عند تحميل الصفحة
+  document.addEventListener('DOMContentLoaded', () => {
+  const savedTheme = localStorage.getItem('theme') || 'light';
+  document.body.setAttribute('data-theme', savedTheme);
+  toggleButton.innerHTML = savedTheme === 'dark' ? '<i class="fa-solid fa-sun fa-fw"></i> <span> السمه</span>' : '<i class="fa-solid fa-moon fa-fw"></i> <span> السمه</span>';
+});
+
+// تغيير التفضيل عند الضغط على الزر
+toggleButton.addEventListener('click', () => {
+  const currentTheme = document.body.getAttribute('data-theme');
+  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  document.body.setAttribute('data-theme', newTheme);
+                  
+  toggleButton.innerHTML = newTheme === 'dark' ? '<i class="fa-solid fa-sun fa-fw"></i>  <span> السمه</span>' : '<i class="fa-solid fa-moon fa-fw"></i>  <span> السمه</span>';
+  localStorage.setItem('theme', newTheme);
+});
+
+
+</script>
+<script>
+  // تابع لجلب أسماء الموظفين وإظهار النتائج
+  document.getElementById("employee-name").addEventListener("input", async function() {
+    const query = this.value.trim();
+    const listContainer = document.getElementById("employee-list");
+
+    if (query.length > 0) {
+      try {
+        const response = await fetch(`/api/get-employees`);
+        const employeeNames = await response.json();
+
+        // تصفية الأسماء المطابقة
+        const filteredNames = employeeNames.filter(name => name.includes(query));
+
+        // تحديث القائمة
+        listContainer.innerHTML = "";
+        if (filteredNames.length > 0) {
+          listContainer.style.display = "block";
+          filteredNames.forEach(name => {
+            const item = document.createElement("div");
+            item.className = "employee-item";
+            item.textContent = name;
+            item.onclick = () => {
+              document.getElementById("employee-name").value = name;
+              listContainer.style.display = "none";
+            };
+            listContainer.appendChild(item);
+          });
+        } else {
+          listContainer.style.display = "none";
+        }
+      } catch (error) {
+        console.error("Error fetching employee names:", error);
+      }
+    } else {
+      listContainer.style.display = "none";
+    }
+  });
+
+  // إخفاء القائمة عند الضغط خارجها
+  document.addEventListener("click", (e) => {
+    if (!document.getElementById("employee-name").contains(e.target)) {
+      document.getElementById("employee-list").style.display = "none";
+    }
+  });
+</script>
+
+
+    <script>
+        let selectedOperation = '';
+        // اختيار نوع العملية وتغيير مظهر الخيار المحدد
+        function selectOperation(type) {
+            selectedOperation = type;
+            document.querySelector('.deposit').classList.remove('selected_green');
+            document.querySelector('.withdraw').classList.remove('selected_red');
+            
+            if (type === 'deposit') {
+                document.querySelector('.deposit').classList.add('selected_green');
+            } else if (type === 'withdraw') {
+                document.querySelector('.withdraw').classList.add('selected_red');
+            }
+        }
+
+        // دالة لحفظ العملية وإرسال البيانات إلى الخادم
+        function saveOperation() {
+            const employeeName = document.getElementById('employee-name').value;
+            const operationDetails = document.getElementById('operation-details').value;
+            const amount = document.getElementById('amount').value;
+
+            // التحقق من ملء جميع الحقول
+            if (!employeeName || !operationDetails || !amount || !selectedOperation) {
+                window.electronAPI.showDialogMessage("يرجى ملء جميع الحقول واختيار نوع العملية.");
+                return;
+            }
+
+            // إرسال البيانات إلى نقطة النهاية في الخادم
+            fetch('/api/financial-transactions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    employeeName: employeeName,    // اسم الموظف
+                    details: operationDetails,     // تفاصيل العملية
+                    amount: parseFloat(amount),    // مبلغ العملية
+                    type: selectedOperation        // نوع العملية (إضافة أو سحب)
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                window.electronAPI.showDialogMessage(data.message);
+                // تفريغ الحقول بعد الحفظ
+                document.getElementById('employee-name').value = '';
+                document.getElementById('operation-details').value = '';
+                document.getElementById('amount').value = '';
+                selectedOperation = '';
+                document.querySelector('.deposit').classList.remove('selected');
+                document.querySelector('.withdraw').classList.remove('selected');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                window.electronAPI.showDialogMessage("حدث خطأ أثناء حفظ العملية.");
+            });
+        }
+    
+    
+    </script>
+</body>
+</html>

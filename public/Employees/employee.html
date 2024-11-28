@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> MRIT</title>
+    <style>
+        h2 {
+            color: #333;
+        }
+        .action-icons {
+            cursor: pointer;
+            margin-left: 5px;
+        }
+
+        /* إعدادات overlay ومربع التعديل */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        /* .dialog-box, .edit-box {
+            background-color: #fff;
+            padding: 20px;
+            width: 300px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        } */
+
+        .dialog-buttons, .edit-buttons {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+        }
+
+        .dialog-buttons button, .edit-buttons button {
+            padding: 8px 16px;
+            font-size: 16px;
+        }
+    </style>
+
+
+    <link rel="stylesheet" href="../css/three.css">
+    <link rel="stylesheet" href="../css/employee.css">
+    <link rel="stylesheet" href="../css/all.min.css">
+    <!-- <link rel="stylesheet" href="css/search.css"> -->
+</head>
+<body>
+    <header>
+    <!-- <h1> ادرة العملاء</h1> -->
+    <h1>إدارة الموظفين</h1>
+    <ul>    
+        <li id="toggleSidebar"><i class="fa-regular fa-chart-bar fa-fw"></i> <p></p> </li>
+        <li><a href="../index.html"> <i class="fa-solid fa-house-chimney"></i> 
+            <p>الرئيسية</p>
+        </a></li>
+        <li><a href="employ_transaction.html"> <i class="fa-solid fa-tent-arrow-left-right"></i><p> ادرة حسابات الموضفين  </p> </a></li>
+        <li><a href="seacrh_employ.html"> <i class="fa-solid fa-magnifying-glass"></i><p>البحث عن موظف</p></a></li>
+</ul>
+<div class="hover">
+  <div class="sidebar">
+        <h3>M_RI_T</h3>
+        <ul>
+           <li>
+                <a href="../backup.html">
+                   <i class="fa-regular fa-credit-card fa-fw"></i>
+                   <span>النسخ الاحتايطي</span>
+                </a>
+            </li>
+            <li>
+                <a href="../workTypes.html">
+                    <i class="fa-solid fa-briefcase"></i>
+                <span> إدارة  الأعمال</span>
+                </a>
+            </li>
+            <li>
+                <a href="../products.html"> 
+                    <i class="fas fa-file-invoice icon" title="إضافة فاتورة جديدة"></i>
+                    <span> اضافة فاتورة</span>
+                </a>
+            </li>
+
+            <li>
+                <a id="theme-toggle"></a>
+            </li>
+        </ul>
+    </div>
+</div>
+</header>
+
+    <div class="container  employee search">
+        <!-- استمارة إضافة الموظفين -->
+        <div class="form box">
+            <label>اسم الموظف<p>:</p></label>
+            <input type="text" id="name" autocomplete="off">
+            <label>الوظيفة<p>:</p></label>
+            <input type="text" id="position" autocomplete="off">
+            <label>الراتب<p>:</p></label>
+            <input type="number" id="salary" autocomplete="off">
+            <button onclick="addEmployee()">إضافة موظف</button>
+            <!-- <button onclick="fetchClients()">تحميل قائمة العملاء</button> -->
+        </div>
+
+        <!-- جدول الموظفين -->
+        <div class="balance-table tables">
+            <h2>قائمة العملاء</h2>
+            <table id="clientsTable">
+                <thead>
+                    <tr>
+                        <th>التحكم</th>
+                        <!-- <th>الرقم</th> -->
+                        <th>اسم الموظف</th>
+                        <th>الوظيفة</th>
+                        <th>الراتب</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- overlay لمربع الحوار ومربع التعديل -->
+    <div id="overlay" class="overlay">
+        <!-- مربع التأكيد للحذف -->
+        <div class="dialog-box" id="dialogBox">
+            <p id="dialogMessage">هل تريد حذف الموظف؟</p>
+            <div class="dialog-buttons">
+                <button onclick="confirmAction()">نعم</button>
+                <button onclick="closeDialog()">إلغاء</button>
+            </div>
+        </div>
+
+        <!-- مربع التعديل -->
+        <div class="edit-box" id="editBox">
+            <h3>تعديل بيانات الموظف</h3>
+            <label>اسم الموظف:</label>
+            <input type="text" id="editName" autocomplete="off">
+            <label>الوظيفة:</label>
+            <input type="text" id="editPosition" autocomplete="off">
+            <label>الراتب:</label>
+            <input type="number" id="editSalary" autocomplete="off">
+            <div class="edit-buttons">
+                <button onclick="saveEdit()">حفظ</button>
+                <button onclick="closeDialog()">إلغاء</button>
+            </div>
+        </div>
+    </div>
+ <!--  تحميل التفضيل عند تحميل الصفحة + اضهار الجز الجانبي-->
+ <script>
+    document.getElementById("toggleSidebar").addEventListener("click", function() {
+    var sidebar = document.querySelector(".sidebar");
+    sidebar.classList.toggle("active"); // تبديل الفئة active لإظهار أو إخفاء الـ sidebar
+  });
+  
+  const toggleButton = document.getElementById('theme-toggle');
+
+    // تحميل التفضيل عند تحميل الصفحة
+    document.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.body.setAttribute('data-theme', savedTheme);
+    toggleButton.innerHTML = savedTheme === 'dark' ? '<i class="fa-solid fa-sun fa-fw"></i> <span> السمه</span>' : '<i class="fa-solid fa-moon fa-fw"></i> <span> السمه</span>';
+  });
+  
+  // تغيير التفضيل عند الضغط على الزر
+  toggleButton.addEventListener('click', () => {
+    const currentTheme = document.body.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    document.body.setAttribute('data-theme', newTheme);
+                    
+    toggleButton.innerHTML = newTheme === 'dark' ? '<i class="fa-solid fa-sun fa-fw"></i>  <span> السمه</span>' : '<i class="fa-solid fa-moon fa-fw"></i>  <span> السمه</span>';
+    localStorage.setItem('theme', newTheme);
+  });
+  
+  
+  </script>
+    <script>
+        let selectedEmployeeId;
+        let actionType;
+
+        // دالة إضافة موظف جديد
+        function addEmployee() {
+            const name = document.getElementById('name').value;
+            const position = document.getElementById('position').value;
+            const salary = document.getElementById('salary').value;
+
+            fetch('/api/employees', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, position, salary })
+            })
+            .then(response => response.json())
+            .then(data => {
+                window.electronAPI.showDialogMessage(data.message || 'تمت إضافة الموظف بنجاح.');
+                fetchClients(); // تحديث الجدول بعد الإضافة
+            })
+            .catch(error => console.error('Error adding employee:', error));
+        }
+
+        // جلب قائمة العملاء
+        function fetchClients() {
+            fetch('/api/employees')
+                .then(response => response.json())
+                .then(data => {
+                    const tbody = document.querySelector('#clientsTable tbody');
+                    tbody.innerHTML = '';
+                    data.forEach((employee, index) => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>
+                                <span class="delete-icon" onclick="showDialog(${employee.id}, 'delete')"><i class="fa-regular fa-trash-can delete"></i></span>
+                                <span class="edit-icon" onclick="showDialog(${employee.id}, 'edit')"><i class="fa-solid fa-pen"></i></span>
+                            </td>
+                            <td>${employee.name}</td>
+                            <td>${employee.position}</td>
+                            <td>${employee.salary}</td>
+  
+                        `;
+                        tbody.appendChild(row);
+                    });
+                });
+        }
+
+        function showDialog(employeeId, type) {
+            selectedEmployeeId = employeeId;
+            actionType = type;
+
+            const overlay = document.getElementById('overlay');
+            const dialogBox = document.getElementById('dialogBox');
+            const editBox = document.getElementById('editBox');
+
+            overlay.style.display = 'flex';
+
+            if (type === 'delete') {
+                dialogBox.style.display = 'block';
+                editBox.style.display = 'none';
+                document.getElementById('dialogMessage').textContent = "هل تريد حذف الموظف؟";
+            } else if (type === 'edit') {
+                dialogBox.style.display = 'none';
+                editBox.style.display = 'block';
+
+                // تعبئة الحقول ببيانات الموظف المحدد للتعديل
+                fetch(`/api/employees/${employeeId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('editName').value = data.name;
+                        document.getElementById('editPosition').value = data.position;
+                        document.getElementById('editSalary').value = data.salary;
+                    });
+            }
+        }
+
+        function closeDialog() {
+            const overlay = document.getElementById('overlay');
+            overlay.style.display = 'none';
+        }
+
+        // =========================== 
+        function showDialog(employeeId, type) {
+    selectedEmployeeId = employeeId;
+    actionType = type;
+
+    const overlay = document.getElementById('overlay');
+    const dialogBox = document.getElementById('dialogBox');
+    const editBox = document.getElementById('editBox');
+
+    overlay.style.display = 'flex';
+
+    if (type === 'delete') {
+        dialogBox.style.display = 'block';
+        editBox.style.display = 'none';
+        document.getElementById('dialogMessage').textContent = "هل تريد حذف الموظف؟";
+    } else if (type === 'edit') {
+        dialogBox.style.display = 'none';
+        editBox.style.display = 'block';
+
+        // تعبئة الحقول ببيانات الموظف المحدد للتعديل
+        fetch(`/api/employees/${employeeId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('حدث خطأ أثناء جلب بيانات الموظف.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById('editName').value = data.name || '';
+                document.getElementById('editPosition').value = data.position || '';
+                document.getElementById('editSalary').value = data.salary || '';
+            })
+            .catch(error => {
+                window.electronAPI.showDialogMessage('لا يمكن جلب بيانات الموظف. تأكد من أن الخادم يعمل بشكل صحيح.');
+                console.error('Error fetching employee data:', error);
+                closeDialog(); // إغلاق مربع التعديل في حال حدوث خطأ
+            });
+    }
+}
+
+        // =========================== 
+        function confirmAction() {
+            if (actionType === 'delete') {
+                deleteEmployee(selectedEmployeeId);
+            }
+            closeDialog();
+        }
+
+        function saveEdit() {
+            const name = document.getElementById('editName').value;
+            const position = document.getElementById('editPosition').value;
+            const salary = document.getElementById('editSalary').value;
+
+            fetch(`/api/employees/${selectedEmployeeId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, position, salary })
+            })
+            .then(response => response.json())
+            .then(data => {
+                window.electronAPI.showDialogMessage(data.message || 'تم تعديل بيانات الموظف بنجاح.');
+                fetchClients(); // تحديث الجدول بعد التعديل
+            })
+            .catch(error => console.error('Error updating employee:', error));
+
+            closeDialog();
+        }
+
+        function deleteEmployee(employeeId) {
+            fetch(`/api/employees/${employeeId}`, { method: 'DELETE' })
+                .then(response => response.json())
+                .then(data => {
+                    window.electronAPI.showDialogMessage(data.message || 'تم حذف الموظف بنجاح.');
+                    fetchClients(); // تحديث الجدول بعد الحذف
+                })
+                .catch(error => console.error('Error deleting employee:', error));
+        }
+
+        // استدعاء دالة جلب العملاء لتحديث الجدول
+        fetchClients();
+    </script>
+</body>
+</html>
