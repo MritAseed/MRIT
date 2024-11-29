@@ -60,6 +60,9 @@
     <ul>
               <li><a href="/products.html"> اضافة معاملات نقد  </a></li>
               <li><a href="#">   صندوق المصروفات  </a></li>
+              <li><a href="about.html">   صندوق   </a></li>
+    <!-- <button id="about-button">حول البرنامج</button> -->
+
     </ul>
 
         <ul>
@@ -70,6 +73,21 @@
         <li><a href="Employees/seacrh_employ.html">  بحث عن الموضفين </a></li>
     </ul>
 
+    <button id="about-button">حول البرنامج</button>
+
+    <script>
+      const aboutButton = document.getElementById('about-button');
+      aboutButton.addEventListener('click', () => {
+        if (window.electronAPI && window.electronAPI.showAbout) {
+          window.electronAPI.showAbout();
+        } else {
+          console.error('electronAPI.showAbout غير معرّف');
+        }
+      });
+    </script>
+    
+    
+    
  <!--  تحميل التفضيل عند تحميل الصفحة + اضهار الجز الجانبي-->
   <script>
           document.getElementById("toggleSidebar").addEventListener("click", function() {

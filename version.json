@@ -7,7 +7,11 @@
       },
       {
         "path": "public/index.html", 
-        "url": "https://raw.githubusercontent.com/MritAseed/MRIT/refs/heads/main/index.js" 
+        "url": "https://raw.githubusercontent.com/MritAseed/MRIT/refs/heads/main/public/index.html" 
+      },
+      {
+        "path": "public/about.html", 
+        "url": "https://raw.githubusercontent.com/MritAseed/MRIT/refs/heads/main/public/about.html" 
       }
     ]
   }

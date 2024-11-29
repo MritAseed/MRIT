@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>حول البرنامج</title>
+  <style>
+    /* تصميم مؤشر التحميل */
+    #spinner {
+      display: none; /* مخفي افتراضيًا */
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #3498db;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>حول البرنامج</h1>
+  <p>هذا التطبيق مخصص لإدارة العمليات المحلية.</p>
+  <button id="check-updates">تحقق من وجود تحديثات</button>
+  <div id="spinner"></div> <!-- مؤشر التحميل -->
+
+  <script>
+    const checkUpdatesButton = document.getElementById('check-updates');
+    const spinner = document.getElementById('spinner');
+
+    checkUpdatesButton.addEventListener('click', async () => {
+      if (window.electronAPI && window.electronAPI.checkForUpdates) {
+        // إظهار مؤشر التحميل
+        spinner.style.display = 'block';
+        checkUpdatesButton.disabled = true;
+
+        try {
+          await window.electronAPI.checkForUpdates();
+        } catch (error) {
+          console.error('خطأ أثناء التحقق من التحديثات:', error);
+        } finally {
+          // إخفاء مؤشر التحميل بعد اكتمال العملية
+          spinner.style.display = 'none';
+          checkUpdatesButton.disabled = false;
+        }
+      } else {
+        console.error('electronAPI.checkForUpdates غير معرّف');
+      }
+    });
+  </script>
+</body>
+</html>
+
+
+<!-- goood -->
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>حول البرنامج</title>
+  <style>
+    /* تصميم دائرة الدوران */
+    .spinner {
+      display: none;
+      margin: 20px auto;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #3498db;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* تصميم رسالة حالة التحقق */
+    .status {
+      text-align: center;
+      font-size: 16px;
+      margin-top: 10px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <h1>حول البرنامج</h1>
+  <p>هذا التطبيق مخصص لإدارة العمليات المحلية.</p>
+  <button id="check-updates">تحقق من وجود تحديثات</button>
+  
+  <-- عنصر يظهر أثناء التحقق ->
+  <div class="spinner" id="spinner"></div>
+  <div class="status" id="status"></div>
+
+  <script>
+    const checkUpdatesButton = document.getElementById('check-updates');
+    const spinner = document.getElementById('spinner');
+    const status = document.getElementById('status');
+
+    checkUpdatesButton.addEventListener('click', () => {
+      // إظهار مؤشر التحميل والرسالة
+      spinner.style.display = 'block';
+      status.textContent = 'جارٍ التحقق من وجود تحديثات...';
+
+      // استدعاء وظيفة التحديث
+      if (window.electronAPI && window.electronAPI.checkForUpdates) {
+        window.electronAPI.checkForUpdates()
+          .then(() => {
+            // تحديث الرسالة بعد انتهاء التحقق
+            status.textContent = 'تم التحقق من التحديثات بنجاح!';
+            spinner.style.display = 'none';
+          })
+          .catch((err) => {
+            // التعامل مع الأخطاء
+            status.textContent = 'حدث خطأ أثناء التحقق من التحديثات.';
+            spinner.style.display = 'none';
+            console.error(err);
+          });
+      } else {
+        status.textContent = 'لا يمكن التحقق من التحديثات.';
+        spinner.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
+
+ -->
+
+
+ <!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>حول البرنامج</title>
+</head>
+<body>
+  <h1>حول البرنامج</h1>
+  <p>هذا التطبيق مخصص لإدارة العمليات المحلية.</p>
+  <button id="check-updates">تحقق من وجود تحديثات</button>
+
+  <script>
+    const checkUpdatesButton = document.getElementById('check-updates');
+    checkUpdatesButton.addEventListener('click', () => {
+      if (window.electronAPI && window.electronAPI.checkForUpdates) {
+        window.electronAPI.checkForUpdates();
+      } else {
+        console.error('electronAPI.checkForUpdates غير معرّف');
+      }
+    });
+  </script>
+</body>
+</html>
+ -->

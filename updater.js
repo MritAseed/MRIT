@@ -6,7 +6,7 @@ const { dialog } = require("electron"); // لإظهار رسائل للمستخ�
 // مسارات الملفات
 const LOCAL_VERSION_FILE = path.join(__dirname, "version.json"); // مسار ملف الإصدار المحلي
 const REMOTE_VERSION_URL =
-  "https://github.com/MritAsid/MyElectronApp/blob/main/version.json";
+  "https://raw.githubusercontent.com/MritAseed/MRIT/refs/heads/main/version.json";
 
 // وظيفة لتنزيل الملفات
 async function updateFiles(files) {
