@@ -1,0 +1,50 @@
+{
+  "version": "1.0.0",
+  "files": [
+
+    {
+      "path": "public/index.html",
+      "url": "https://raw.githubusercontent.com/MritAseed/MRIT/refs/heads/main/public/index.html"
+    },
+    {
+      "path": "public/add_delete.html",
+      "url": "https://raw.githubusercontent.com/MritAseed/MRIT/refs/heads/main/public/add_delete.html"
+    },
+    {
+      "path": "public/transaction.html",
+      "url": "https://raw.githubusercontent.com/MritAseed/MRIT/refs/heads/main/public/transaction.html"
+    },
+    {
+      "path": "public/search.html",
+      "url": "https://raw.githubusercontent.com/MritAseed/MRIT/refs/heads/main/public/search.html"
+    },
+    {
+      "path": "public/backup.html",
+      "url": "https://raw.githubusercontent.com/MritAseed/MRIT/refs/heads/main/public/backup.html"
+    },
+    {
+      "path": "public/products.html",
+      "url": "https://raw.githubusercontent.com/MritAseed/MRIT/refs/heads/main/public/products.html"
+    },
+    {
+      "path": "public/workTypes.html",
+      "url": "https://raw.githubusercontent.com/MritAseed/MRIT/refs/heads/main/public/workTypes.html"
+    },
+    {
+      "path": "public/about.html",
+      "url": "https://raw.githubusercontent.com/MritAseed/MRIT/refs/heads/main/public/about.html"
+    },
+    {
+      "path": "public/css/three.css",
+      "url": "https://raw.githubusercontent.com/MritAseed/MRIT/refs/heads/main/public/css/three.css"
+    },  
+    {
+      "path": "public/css/style.css",
+      "url": "https://raw.githubusercontent.com/MritAseed/MRIT/refs/heads/main/public/css/style.css"
+    },
+    {
+      "path": "public/css/employee.css",
+      "url": "https://raw.githubusercontent.com/MritAseed/MRIT/refs/heads/main/public/css/employee.css"
+    }
+  ]
+}

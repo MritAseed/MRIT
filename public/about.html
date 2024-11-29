@@ -88,34 +88,7 @@
 </div>
 
 
- <!--  تحميل التفضيل عند تحميل الصفحة + اضهار الجز الجانبي-->
- <script>
-  document.getElementById("toggleSidebar").addEventListener("click", function() {
-  var sidebar = document.querySelector(".sidebar");
-  sidebar.classList.toggle("active"); // تبديل الفئة active لإظهار أو إخفاء الـ sidebar
-});
 
-const toggleButton = document.getElementById('theme-toggle');
-
-  // تحميل التفضيل عند تحميل الصفحة
-  document.addEventListener('DOMContentLoaded', () => {
-  const savedTheme = localStorage.getItem('theme') || 'light';
-  document.body.setAttribute('data-theme', savedTheme);
-  toggleButton.innerHTML = savedTheme === 'dark' ? '<i class="fa-solid fa-sun fa-fw"></i> <span> السمه</span>' : '<i class="fa-solid fa-moon fa-fw"></i> <span> السمه</span>';
-});
-
-// تغيير التفضيل عند الضغط على الزر
-toggleButton.addEventListener('click', () => {
-  const currentTheme = document.body.getAttribute('data-theme');
-  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-  document.body.setAttribute('data-theme', newTheme);
-                  
-  toggleButton.innerHTML = newTheme === 'dark' ? '<i class="fa-solid fa-sun fa-fw"></i>  <span> السمه</span>' : '<i class="fa-solid fa-moon fa-fw"></i>  <span> السمه</span>';
-  localStorage.setItem('theme', newTheme);
-});
-
-
-</script>
 
 
 
