@@ -1,16 +1,17 @@
 {
   "name": "MRIT",
-  "version": "1.7.8",
+  "version": "1.1.0",
   "main": "index.js",
   "scripts": {
     "start": "electron .",
     "build": "electron-builder"
   },
   "build": {
-    "win": {
-      "icon": "astaas/icon.ico"
-    }
-  },
+  "win": {
+    "icon": "astaas/icon.ico"
+  }
+},
+
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -31,6 +32,7 @@
     "node-cron": "^3.0.3",
     "sqlite3": "^5.1.7"
   },
+  
   "win": {
     "sign": false
   }

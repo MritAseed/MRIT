@@ -5,8 +5,17 @@ const { dialog } = require("electron"); // لإظهار رسائل للمستخ�
 
 // مسارات الملفات
 const LOCAL_VERSION_FILE = path.join(__dirname, "version.json"); // مسار ملف الإصدار المحلي
+/* if (!fs.existsSync(LOCAL_VERSION_FILE)) {
+  dialog.showMessageBox({
+    type: "error",
+    title: "خطأ",
+    message: `ملف الإصدار المحلي (version.json) غير موجود. تأكد من إضافته أثناء بناء التطبيق.`,
+  });
+  return; // قم بإنهاء الوظيفة إذا كان الملف مفقودًا
+} */
 const REMOTE_VERSION_URL =
   "https://raw.githubusercontent.com/MritAseed/MRIT/refs/heads/main/version.json";
+// const LOCAL_VERSION_FILE = path.join(__dirname, "version.json");
 
 // وظيفة لتنزيل الملفات
 async function updateFiles(files) {
@@ -29,7 +38,7 @@ async function checkForUpdates() {
 
   while (retries < MAX_RETRIES) {
     try {
-      console.log("جارٍ التحقق من وجود تحديثات...");
+      console.log("Checking for updates...");
       const { data: remoteVersion } = await axios.get(REMOTE_VERSION_URL); // تحميل ملف الإصدار البعيد
       const localVersion = JSON.parse(
         fs.readFileSync(LOCAL_VERSION_FILE, "utf-8")
