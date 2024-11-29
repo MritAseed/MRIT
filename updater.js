@@ -23,62 +23,129 @@ async function updateFiles(files) {
   }
 }
 
-// وظيفة التحقق من وجود تحديثات
 async function checkForUpdates() {
-  try {
-    console.log("جارٍ التحقق من وجود تحديثات...");
-    const { data: remoteVersion } = await axios.get(REMOTE_VERSION_URL); // تحميل ملف الإصدار البعيد
-    const localVersion = JSON.parse(
-      fs.readFileSync(LOCAL_VERSION_FILE, "utf-8")
-    ); // قراءة ملف الإصدار المحلي
+  const MAX_RETRIES = 3; // عدد المحاولات لإعادة التحقق
+  let retries = 0;
 
-    if (remoteVersion.version !== localVersion.version) {
-      // مقارنة رقم الإصدار
-      const userResponse = await dialog.showMessageBox({
-        type: "info",
-        buttons: ["تحديث الآن", "إلغاء"],
-        title: "تحديث جديد متوفر",
-        message: `يوجد تحديث جديد للإصدار ${remoteVersion.version}.\nهل ترغب في تنزيل التحديث الآن؟`,
-      });
+  while (retries < MAX_RETRIES) {
+    try {
+      console.log("جارٍ التحقق من وجود تحديثات...");
+      const { data: remoteVersion } = await axios.get(REMOTE_VERSION_URL); // تحميل ملف الإصدار البعيد
+      const localVersion = JSON.parse(
+        fs.readFileSync(LOCAL_VERSION_FILE, "utf-8")
+      ); // قراءة ملف الإصدار المحلي
 
-      if (userResponse.response === 0) {
-        // إذا اختار المستخدم "تحديث الآن"
-        dialog.showMessageBox({
+      if (remoteVersion.version !== localVersion.version) {
+        // مقارنة رقم الإصدار
+        const userResponse = await dialog.showMessageBox({
           type: "info",
-          title: "جارٍ التنزيل",
-          message: "يتم الآن تنزيل الملفات الجديدة...",
+          buttons: ["تحديث الآن", "إلغاء"],
+          title: "تحديث جديد متوفر",
+          message: `يوجد تحديث جديد للإصدار ${remoteVersion.version}.\nهل ترغب في تنزيل التحديث الآن؟`,
         });
 
-        await updateFiles(remoteVersion.files); // تنزيل الملفات وتحديثها
-        fs.writeFileSync(
-          LOCAL_VERSION_FILE,
-          JSON.stringify(remoteVersion, null, 2)
-        ); // تحديث ملف الإصدار المحلي
+        if (userResponse.response === 0) {
+          dialog.showMessageBox({
+            type: "info",
+            title: "جارٍ التنزيل",
+            message: "يتم الآن تنزيل الملفات الجديدة...",
+          });
 
-        dialog.showMessageBox({
+          await updateFiles(remoteVersion.files); // تنزيل الملفات وتحديثها
+          fs.writeFileSync(
+            LOCAL_VERSION_FILE,
+            JSON.stringify(remoteVersion, null, 2)
+          ); // تحديث ملف الإصدار المحلي
+
+          dialog.showMessageBox({
+            type: "info",
+            title: "تحديث مكتمل",
+            message: "تم تنزيل التحديثات بنجاح! يرجى إعادة تشغيل التطبيق.",
+          });
+        }
+      } else {
+        console.log("التطبيق محدث بالفعل.");
+        await dialog.showMessageBox({
           type: "info",
-          title: "تحديث مكتمل",
-          message: "تم تنزيل التحديثات بنجاح! يرجى إعادة تشغيل التطبيق.",
+          title: "التطبيق محدث",
+          message: "التطبيق لديك محدث بالفعل ولا توجد تحديثات جديدة متوفرة.",
         });
       }
-    } else {
-      // إذا لم يكن هناك تحديث جديد
-      console.log("التطبيق محدث بالفعل.");
-      await dialog.showMessageBox({
-        type: "info",
-        title: "التطبيق محدث",
-        message: "التطبيق لديك محدث بالفعل ولا توجد تحديثات جديدة متوفرة.",
-      });
+      return; // إنهاء الوظيفة عند نجاحها
+    } catch (error) {
+      retries++;
+      console.error(
+        `خطأ أثناء التحقق من التحديثات: المحاولة ${retries}/${MAX_RETRIES}`,
+        error
+      );
+
+      if (retries >= MAX_RETRIES) {
+        dialog.showMessageBox({
+          type: "error",
+          title: "خطأ",
+          message: `حدث خطأ أثناء التحقق من التحديثات. يرجى التحقق من اتصال الإنترنت أو المحاولة لاحقاً.\nتفاصيل الخطأ: ${error.message}`,
+        });
+      }
     }
-  } catch (error) {
-    console.error("خطأ أثناء التحقق من التحديثات:", error);
-    dialog.showMessageBox({
-      type: "error",
-      title: "خطأ",
-      message: "حدث خطأ أثناء التحقق من التحديثات. يرجى المحاولة لاحقاً.",
-    });
   }
 }
+
+// وظيفة التحقق من وجود تحديثات
+// async function checkForUpdates() {
+//   try {
+//     console.log("جارٍ التحقق من وجود تحديثات...");
+//     const { data: remoteVersion } = await axios.get(REMOTE_VERSION_URL); // تحميل ملف الإصدار البعيد
+//     const localVersion = JSON.parse(
+//       fs.readFileSync(LOCAL_VERSION_FILE, "utf-8")
+//     ); // قراءة ملف الإصدار المحلي
+
+//     if (remoteVersion.version !== localVersion.version) {
+//       // مقارنة رقم الإصدار
+//       const userResponse = await dialog.showMessageBox({
+//         type: "info",
+//         buttons: ["تحديث الآن", "إلغاء"],
+//         title: "تحديث جديد متوفر",
+//         message: `يوجد تحديث جديد للإصدار ${remoteVersion.version}.\nهل ترغب في تنزيل التحديث الآن؟`,
+//       });
+
+//       if (userResponse.response === 0) {
+//         // إذا اختار المستخدم "تحديث الآن"
+//         dialog.showMessageBox({
+//           type: "info",
+//           title: "جارٍ التنزيل",
+//           message: "يتم الآن تنزيل الملفات الجديدة...",
+//         });
+
+//         await updateFiles(remoteVersion.files); // تنزيل الملفات وتحديثها
+//         fs.writeFileSync(
+//           LOCAL_VERSION_FILE,
+//           JSON.stringify(remoteVersion, null, 2)
+//         ); // تحديث ملف الإصدار المحلي
+
+//         dialog.showMessageBox({
+//           type: "info",
+//           title: "تحديث مكتمل",
+//           message: "تم تنزيل التحديثات بنجاح! يرجى إعادة تشغيل التطبيق.",
+//         });
+//       }
+//     } else {
+//       // إذا لم يكن هناك تحديث جديد
+//       console.log("التطبيق محدث بالفعل.");
+//       await dialog.showMessageBox({
+//         type: "info",
+//         title: "التطبيق محدث",
+//         message: "التطبيق لديك محدث بالفعل ولا توجد تحديثات جديدة متوفرة.",
+//       });
+//     }
+//   } catch (error) {
+//     console.error("خطأ أثناء التحقق من التحديثات:", error);
+//     dialog.showMessageBox({
+//       type: "error",
+//       title: "خطأ",
+//       message: "حدث خطأ أثناء التحقق من التحديثات. يرجى المحاولة لاحقاً.",
+//     });
+//   }
+// }
 
 // async function checkForUpdates() {
 //   try {
