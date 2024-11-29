@@ -195,6 +195,19 @@ header .hover .active {
   font-size: 14px;
   margin-right: 10px;
 }
+.sidebar ul li button {
+    padding: 4px 0px;
+    font-size: 14px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: white;
+    font-weight: 800;
+    width: 30%;
+    margin: 0 auto;
+    background-color: var(--back-button-color);
+    cursor: pointer;
+    box-shadow: 0 0 2px 1px var(--bordr-buttom-color);
+  }
 
 .Numbr {
        display: flex;

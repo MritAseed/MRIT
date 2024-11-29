@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -26,12 +26,105 @@
       }
     }
   </style>
+  <link rel="stylesheet" href="css/all.min.css">
+  <link rel="stylesheet" href="css/three.css">
 </head>
 <body>
-  <h1>حول البرنامج</h1>
-  <p>هذا التطبيق مخصص لإدارة العمليات المحلية.</p>
-  <button id="check-updates">تحقق من وجود تحديثات</button>
+ 
   <div id="spinner"></div> <!-- مؤشر التحميل -->
+
+  <header>
+  <h1>حول البرنامج</h1>
+    
+    <ul>    
+            <li id="toggleSidebar"><i class="fa-regular fa-chart-bar fa-fw"></i> <p></p> </li>
+            <li><a href="index.html"> <i class="fa-solid fa-house-chimney"></i> 
+                <p>الرئيسية</p>
+            </a></li>
+            <li><a href="transaction.html"> <i class="fa-solid fa-tent-arrow-left-right"></i>
+                <p>
+                    ادرة حسابات العملاء
+
+                </p> </a></li>
+            <li><a href="/search.html"> <i class="fa-solid fa-magnifying-glass"></i><p>البحث عن عميل</p></a></li>
+    </ul>
+    <div class="hover">
+      <div class="sidebar">
+            <h3>M_RI_T</h3>
+            <ul>
+               <li>
+                    <a href="backup.html">
+                       <i class="fa-regular fa-credit-card fa-fw"></i>
+                       <span>النسخ الاحتايطي</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/workTypes.html">
+                        <i class="fa-solid fa-briefcase"></i>
+                    <span> إدارة  الأعمال</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/products.html"> 
+                        <i class="fas fa-file-invoice icon" title="إضافة فاتورة جديدة"></i>
+                        <span> اضافة فاتورة</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a id="theme-toggle"></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+ </header>
+ <div class="container add_delete">
+  <div class="box">
+
+ <p>هذا التطبيق مخصص لإدارة العمليات المحلية.</p>
+ <button id="check-updates">تحقق من وجود تحديثات</button>
+
+</div>
+</div>
+
+
+ <!--  تحميل التفضيل عند تحميل الصفحة + اضهار الجز الجانبي-->
+ <script>
+  document.getElementById("toggleSidebar").addEventListener("click", function() {
+  var sidebar = document.querySelector(".sidebar");
+  sidebar.classList.toggle("active"); // تبديل الفئة active لإظهار أو إخفاء الـ sidebar
+});
+
+const toggleButton = document.getElementById('theme-toggle');
+
+  // تحميل التفضيل عند تحميل الصفحة
+  document.addEventListener('DOMContentLoaded', () => {
+  const savedTheme = localStorage.getItem('theme') || 'light';
+  document.body.setAttribute('data-theme', savedTheme);
+  toggleButton.innerHTML = savedTheme === 'dark' ? '<i class="fa-solid fa-sun fa-fw"></i> <span> السمه</span>' : '<i class="fa-solid fa-moon fa-fw"></i> <span> السمه</span>';
+});
+
+// تغيير التفضيل عند الضغط على الزر
+toggleButton.addEventListener('click', () => {
+  const currentTheme = document.body.getAttribute('data-theme');
+  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  document.body.setAttribute('data-theme', newTheme);
+                  
+  toggleButton.innerHTML = newTheme === 'dark' ? '<i class="fa-solid fa-sun fa-fw"></i>  <span> السمه</span>' : '<i class="fa-solid fa-moon fa-fw"></i>  <span> السمه</span>';
+  localStorage.setItem('theme', newTheme);
+});
+
+
+</script>
+
+
+
+
+
+
+
+
+
 
   <script>
     const checkUpdatesButton = document.getElementById('check-updates');

@@ -62,7 +62,13 @@ async function checkForUpdates() {
         });
       }
     } else {
+      // إذا لم يكن هناك تحديث جديد
       console.log("التطبيق محدث بالفعل.");
+      await dialog.showMessageBox({
+        type: "info",
+        title: "التطبيق محدث",
+        message: "التطبيق لديك محدث بالفعل ولا توجد تحديثات جديدة متوفرة.",
+      });
     }
   } catch (error) {
     console.error("خطأ أثناء التحقق من التحديثات:", error);
@@ -73,6 +79,57 @@ async function checkForUpdates() {
     });
   }
 }
+
+// async function checkForUpdates() {
+//   try {
+//     console.log("جارٍ التحقق من وجود تحديثات...");
+//     const { data: remoteVersion } = await axios.get(REMOTE_VERSION_URL); // تحميل ملف الإصدار البعيد
+//     const localVersion = JSON.parse(
+//       fs.readFileSync(LOCAL_VERSION_FILE, "utf-8")
+//     ); // قراءة ملف الإصدار المحلي
+
+//     if (remoteVersion.version !== localVersion.version) {
+//       // مقارنة رقم الإصدار
+//       const userResponse = await dialog.showMessageBox({
+//         type: "info",
+//         buttons: ["تحديث الآن", "إلغاء"],
+//         title: "تحديث جديد متوفر",
+//         message: `يوجد تحديث جديد للإصدار ${remoteVersion.version}.\nهل ترغب في تنزيل التحديث الآن؟`,
+//       });
+
+//       if (userResponse.response === 0) {
+//         // إذا اختار المستخدم "تحديث الآن"
+//         dialog.showMessageBox({
+//           type: "info",
+//           title: "جارٍ التنزيل",
+//           message: "يتم الآن تنزيل الملفات الجديدة...",
+//         });
+
+//         await updateFiles(remoteVersion.files); // تنزيل الملفات وتحديثها
+//         fs.writeFileSync(
+//           LOCAL_VERSION_FILE,
+//           JSON.stringify(remoteVersion, null, 2)
+//         ); // تحديث ملف الإصدار المحلي
+
+//         dialog.showMessageBox({
+//           type: "info",
+//           title: "تحديث مكتمل",
+//           message: "تم تنزيل التحديثات بنجاح! يرجى إعادة تشغيل التطبيق.",
+//         });
+//       }
+//     } else {
+//       console.log("التطبيق محدث بالفعل.");
+//       console.log("  app is upt.");
+//     }
+//   } catch (error) {
+//     console.error("خطأ أثناء التحقق من التحديثات:", error);
+//     dialog.showMessageBox({
+//       type: "error",
+//       title: "خطأ",
+//       message: "حدث خطأ أثناء التحقق من التحديثات. يرجى المحاولة لاحقاً.",
+//     });
+//   }
+// }
 
 module.exports = { checkForUpdates }; // تصدير الوظيفة
 
