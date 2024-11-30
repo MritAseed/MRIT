@@ -45,6 +45,10 @@
     {
       "path": "public/css/employee.css",
       "url": "https://raw.githubusercontent.com/MritAseed/MRIT/refs/heads/main/public/css/employee.css"
+    },
+    {
+      "path": "public/css/about.css",
+      "url": "https://raw.githubusercontent.com/MritAseed/MRIT/refs/heads/main/public/css/about.css"
     }
   ]
 }
