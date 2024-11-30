@@ -1,10 +1,14 @@
 {
-  "version": "1.0.2",
+  "version": "1.0.1",
   "files": [
 
     {
       "path": "public/index.html",
       "url": "https://raw.githubusercontent.com/MritAseed/MRIT/refs/heads/main/public/index.html"
+    },
+    {
+      "path": "public/images/imghom.png",
+      "url": "https://raw.githubusercontent.com/MritAseed/MRIT/refs/heads/main/public/images/imghom.png"
     },
     {
       "path": "public/add_delete.html",
