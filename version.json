@@ -1,6 +1,10 @@
 {
-  "version": "2.0.8",
+  "version": "1.0.4",
   "files": [
+    {
+      "path": "public/img/ic.jpg",
+      "url": "https://raw.githubusercontent.com/MritAseed/MRIT/refs/heads/main/public/img/ic.jpg"
+    },
 
     {
       "path": "public/index.html",

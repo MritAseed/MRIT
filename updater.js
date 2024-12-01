@@ -4,12 +4,12 @@ const path = require("path"); // التعامل مع المسارات
 const { dialog } = require("electron"); // لإظهار رسائل للمستخدم
 const { app } = require("electron");
 // مسارات الملفات
-const LOCAL_VERSION_FILE = path.join(
-  app.getAppPath(),
-  "public",
-  "version.json"
-);
-// const LOCAL_VERSION_FILE = path.join(app.getAppPath(), "version.json");
+// const LOCAL_VERSION_FILE = path.join(
+//   app.getAppPath(),
+//   "public",
+//   "version.json"
+// );
+const LOCAL_VERSION_FILE = path.join(app.getAppPath(), "version.json");
 // const LOCAL_VERSION_FILE = path.join(__dirname, "version.json"); // مسار ملف الإصدار المحلي
 /* if (!fs.existsSync(LOCAL_VERSION_FILE)) {
   dialog.showMessageBox({
@@ -20,7 +20,7 @@ const LOCAL_VERSION_FILE = path.join(
   return; // قم بإنهاء الوظيفة إذا كان الملف مفقودًا
 } */
 const REMOTE_VERSION_URL =
-  "https://raw.githubusercontent.com/MritAseed/MRIT/refs/heads/main/public/version.json";
+  "https://raw.githubusercontent.com/MritAseed/MRIT/refs/heads/main/version.json";
 // const LOCAL_VERSION_FILE = path.join(__dirname, "version.json");
 
 // وظيفة لتنزيل الملفات
