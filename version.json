@@ -1,16 +1,11 @@
 {
-  "version": "2.0.0",
+  "version": "1.1.9",
   "files": [
-    {
-      "path": "public/img/ic.jpg",
-      "url": "https://raw.githubusercontent.com/MritAseed/MRIT/refs/heads/main/public/img/ic.jpg"
-    },
 
     {
       "path": "public/index.html",
       "url": "https://raw.githubusercontent.com/MritAseed/MRIT/refs/heads/main/public/index.html"
     },
-
     {
       "path": "public/add_delete.html",
       "url": "https://raw.githubusercontent.com/MritAseed/MRIT/refs/heads/main/public/add_delete.html"
@@ -42,7 +37,7 @@
     {
       "path": "public/css/three.css",
       "url": "https://raw.githubusercontent.com/MritAseed/MRIT/refs/heads/main/public/css/three.css"
-    },  
+    },
     {
       "path": "public/css/style.css",
       "url": "https://raw.githubusercontent.com/MritAseed/MRIT/refs/heads/main/public/css/style.css"
