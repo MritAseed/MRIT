@@ -1,7 +1,11 @@
 {
-  "version": "1.2.0",
+  "version": "1.2.1",
   "files": [
 
+    {
+      "path": "server.js",
+      "url": "https://raw.githubusercontent.com/MritAseed/MRIT/refs/heads/main/server.js"
+    },
     {
       "path": "public/index.html",
       "url": "https://raw.githubusercontent.com/MritAseed/MRIT/refs/heads/main/public/index.html"
