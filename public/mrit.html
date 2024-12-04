@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>استلام وتسليم الأعمال</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    table, th, td { border: 1px solid #ddd; text-align: center; }
+    th, td { padding: 10px; }
+    .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border: 1px solid #ccc; box-shadow: 0px 5px 10px rgba(0,0,0,0.3); }
+    .modal.active { display: block; }
+    .modal-buttons { margin-top: 10px; text-align: right; }
+    button { margin: 5px; }
+  </style>
+    <link rel="stylesheet" href="css/all.min.css">
+    <link rel="stylesheet" href="css/three.css">
+    <link rel="stylesheet" href="css/exching.css">
+</head>
+<body>
+
+<h1>إدارة استلام وتسليم الأعمال</h1>
+<div class="container">
+  <div class="box">
+<!-- النموذج لإدخال البيانات -->
+<form id="work-form">
+  <label>نوع القطعة:</label>
+  <input type="text" id="pieceType" required>
+  <label>الرقم المرجعي:</label>
+  <input type="text" id="referenceNumber" required>
+  <button type="submit">حفظ</button>
+</form>
+</div>
+<div class="tables">
+
+<!-- الجدول لعرض الأعمال -->
+<table>
+  <thead>
+    <tr>
+      <th>الرقم المرجعي</th>
+      <th>نوع القطعة</th>
+      <th>الإجراءات</th>
+    </tr>
+  </thead>
+  <tbody id="works-table">
+    <!-- سيتم ملء البيانات ديناميكيًا -->
+  </tbody>
+</table>
+</div>
+</div>
+<!-- مربع حوار للمعلومات -->
+<div class="modal" id="info-modal">
+  <h3>تفاصيل العمل</h3>
+  <p id="infoDetails"></p>
+  <button onclick="closeModal('info-modal')">إغلاق</button>
+</div>
+
+<!-- مربع حوار للتعديل -->
+<div class="modal" id="edit-modal">
+  <h3>تعديل العمل</h3>
+  <label>نوع القطعة:</label>
+  <input type="text" id="editPieceType">
+  <label>الرقم المرجعي:</label>
+  <input type="text" id="editReferenceNumber">
+  <div class="modal-buttons">
+    <button id="confirmEdit">حفظ</button>
+    <button onclick="closeModal('edit-modal')">إلغاء</button>
+  </div>
+</div>
+
+<script>
+const API_URL = 'http://localhost:3000'; // عنوان الخادم
+
+// تحميل البيانات وعرضها في الجدول
+async function loadWorks() {
+  const response = await fetch(`${API_URL}/works`);
+  const works = await response.json();
+  const tableBody = document.getElementById('works-table');
+  tableBody.innerHTML = ''; // إفراغ الجدول قبل الملء
+
+  works.forEach(work => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${work.reference_number}</td>
+      <td>${work.piece_type}</td>
+      <td>
+        <button onclick="showInfo(${work.id})">معلومات</button>
+        <button onclick="openEditModal(${work.id}, '${work.piece_type}', '${work.reference_number}')">تعديل</button>
+        <button onclick="deleteWork(${work.id})">حذف</button>
+      </td>
+    `;
+    tableBody.appendChild(row);
+  });
+}
+
+// إرسال البيانات إلى الخادم عند الحفظ
+document.getElementById('work-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const pieceType = document.getElementById('pieceType').value;
+  const referenceNumber = document.getElementById('referenceNumber').value;
+
+  await fetch(`${API_URL}/works`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      piece_type: pieceType,
+      reference_number: referenceNumber,
+      operation_type: 'استلام',
+      operation_date: new Date().toISOString(),
+    })
+  });
+
+  loadWorks();
+});
+
+// إظهار المعلومات في مربع حوار
+async function showInfo(workId) {
+  const response = await fetch(`${API_URL}/works/${workId}`);
+  const work = await response.json();
+
+  const details = `
+    <strong>تاريخ الاستلام:</strong> ${new Date(work.operation_date).toLocaleDateString()}<br>
+    <strong>تاريخ التسليم:</strong> ${work.delivery_date ? new Date(work.delivery_date).toLocaleDateString() : 'لم يتم التسليم'}<br>
+    <strong>تفاصيل التسليم:</strong> ${work.delivery_details || 'لا توجد تفاصيل'}
+  `;
+
+  document.getElementById('infoDetails').innerHTML = details;
+  document.getElementById('info-modal').classList.add('active');
+}
+
+// فتح مربع التعديل
+// فتح مربع التعديل
+function openEditModal(workId, pieceType, referenceNumber) {
+  document.getElementById('editPieceType').value = pieceType;
+  document.getElementById('editReferenceNumber').value = referenceNumber;
+
+  const confirmButton = document.getElementById('confirmEdit');
+  confirmButton.onclick = async () => {
+    const updatedPieceType = document.getElementById('editPieceType').value;
+    const updatedReferenceNumber = document.getElementById('editReferenceNumber').value;
+
+    await fetch(`${API_URL}/edit_works/${workId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        piece_type: updatedPieceType,
+        reference_number: updatedReferenceNumber,
+      })
+    });
+
+    closeModal('edit-modal');
+    loadWorks();
+  };
+  document.getElementById('edit-modal').classList.add('active');
+}
+
+// إغلاق مربع حوار
+function closeModal(modalId) {
+  document.getElementById(modalId).classList.remove('active');
+}
+
+// حذف صف
+async function deleteWork(workId) {
+  await fetch(`${API_URL}/works/${workId}`, { method: 'DELETE' });
+  loadWorks();
+}
+
+// عند تحميل الصفحة
+loadWorks();
+</script>
+
+</body>
+</html>
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>استلام وتسليم الأعمال</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .search-container { display: flex; align-items: center; margin-bottom: 20px; }
+    .search-container i { cursor: pointer; margin-right: 10px; font-size: 1.5em; }
+    .search-input { display: none; padding: 5px; border: 1px solid #ddd; border-radius: 4px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    table, th, td { border: 1px solid #ddd; text-align: center; }
+    th, td { padding: 10px; }
+    .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border: 1px solid #ccc; box-shadow: 0px 5px 10px rgba(0,0,0,0.3); }
+    .modal.active { display: block; }
+    .modal-buttons { margin-top: 10px; text-align: right; }
+    button { margin: 5px; }
+  </style>
+</head>
+<body>
+
+<h1>إدارة استلام وتسليم الأعمال</h1>
+
+البحث
+<div class="search-container">
+  <i class="fas fa-search" onclick="toggleSearch()"></i>
+  <input type="text" id="searchInput" class="search-input" placeholder="ابحث عن رقم مرجعي">
+</div>
+
+النموذج لإدخال البيانات
+<form id="work-form">
+  <label>نوع القطعة:</label>
+  <input type="text" id="pieceType" required>
+  <label>الرقم المرجعي:</label>
+  <input type="text" id="referenceNumber" required>
+  <button type="submit">حفظ</button>
+</form>
+
+الجدول لعرض الأعمال
+<table>
+  <thead>
+    <tr>
+      <th>الرقم المرجعي</th>
+      <th>نوع القطعة</th>
+      <th>الإجراءات</th>
+    </tr>
+  </thead>
+  <tbody id="works-table">
+    سيتم ملء البيانات ديناميكيًا
+  </tbody>
+</table>
+
+مربع حوار للمعلومات
+<div class="modal" id="info-modal">
+  <h3>تفاصيل العمل</h3>
+  <p id="infoDetails"></p>
+  <button onclick="closeModal('info-modal')">إغلاق</button>
+</div>
+
+<script>
+const API_URL = 'http://localhost:3000'; // عنوان الخادم
+
+// تحميل البيانات وعرضها في الجدول
+async function loadWorks(filter = '') {
+  const response = await fetch(`${API_URL}/works`);
+  let works = await response.json();
+
+  // تطبيق الفلترة إذا كان هناك بحث
+  if (filter) {
+    works = works.filter(work => work.reference_number.includes(filter));
+  }
+
+  const tableBody = document.getElementById('works-table');
+  tableBody.innerHTML = ''; // إفراغ الجدول قبل الملء
+
+  works.forEach(work => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${work.reference_number}</td>
+      <td>${work.piece_type}</td>
+      <td>
+        <button onclick="showInfo(${work.id})">معلومات</button>
+        <button onclick="openEditModal(${work.id}, '${work.piece_type}', '${work.reference_number}')">تعديل</button>
+        <button onclick="deleteWork(${work.id})">حذف</button>
+      </td>
+    `;
+    tableBody.appendChild(row);
+  });
+}
+
+
+
+// إرسال البيانات إلى الخادم عند الحفظ
+document.getElementById('work-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const pieceType = document.getElementById('pieceType').value;
+  const referenceNumber = document.getElementById('referenceNumber').value;
+
+  await fetch(`${API_URL}/works`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      piece_type: pieceType,
+      reference_number: referenceNumber,
+      operation_type: 'استلام',
+      operation_date: new Date().toISOString(),
+    })
+  });
+
+  loadWorks();
+});
+
+// إظهار المعلومات في مربع حوار
+async function showInfo(workId) {
+  const response = await fetch(`${API_URL}/works/${workId}`);
+  const work = await response.json();
+
+  const details = `
+    <strong>تاريخ الاستلام:</strong> ${new Date(work.operation_date).toLocaleDateString()}<br>
+    <strong>تاريخ التسليم:</strong> ${work.delivery_date ? new Date(work.delivery_date).toLocaleDateString() : 'لم يتم التسليم'}<br>
+    <strong>تفاصيل التسليم:</strong> ${work.delivery_details || 'لا توجد تفاصيل'}
+  `;
+
+  document.getElementById('infoDetails').innerHTML = details;
+  document.getElementById('info-modal').classList.add('active');
+}
+
+// إغلاق مربع حوار
+function closeModal(modalId) {
+  document.getElementById(modalId).classList.remove('active');
+}
+
+// حذف صف
+async function deleteWork(workId) {
+  await fetch(`${API_URL}/works/${workId}`, { method: 'DELETE' });
+  loadWorks();
+}
+
+// عند تحميل الصفحة
+loadWorks();
+</script>
+
+</body>
+</html> -->

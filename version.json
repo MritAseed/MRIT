@@ -1,5 +1,5 @@
 {
-  "version": "1.1.9",
+  "version": "1.2.0",
   "files": [
 
     {
@@ -35,6 +35,10 @@
       "url": "https://raw.githubusercontent.com/MritAseed/MRIT/refs/heads/main/public/about.html"
     },
     {
+      "path": "public/exching.html",
+      "url": "https://raw.githubusercontent.com/MritAseed/MRIT/refs/heads/main/public/exching.html"
+    },
+    {
       "path": "public/css/three.css",
       "url": "https://raw.githubusercontent.com/MritAseed/MRIT/refs/heads/main/public/css/three.css"
     },
@@ -49,6 +53,10 @@
     {
       "path": "public/css/about.css",
       "url": "https://raw.githubusercontent.com/MritAseed/MRIT/refs/heads/main/public/css/about.css"
+    },
+    {
+      "path": "public/css/exching.css",
+      "url": "https://raw.githubusercontent.com/MritAseed/MRIT/refs/heads/main/public/css/exching.css"
     }
   ]
 }

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>استلام وتسليم الأعمال</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    table, th, td { border: 1px solid #ddd; text-align: center; }
+    th, td { padding: 10px; }
+    .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border: 1px solid #ccc; box-shadow: 0px 5px 10px rgba(0,0,0,0.3); }
+    .modal.active { display: block; }
+    .modal-buttons { margin-top: 10px; text-align: right; }
+    button { margin: 5px; }
+  </style>
+  <link rel="stylesheet" href="css/three.css">
+</head>
+<body>
+
+<h1>إدارة استلام وتسليم الأعمال</h1>
+<div class="container">
+    <div class="box">
+        <form id="work-form">
+            <label>نوع القطعة:</label>
+            <input type="text" id="pieceType" required>
+            <label>الرقم المرجعي:</label>
+            <input type="text" id="referenceNumber" required>
+            <button type="submit">حفظ</button>
+          </form>
+    </div>
+<!-- النموذج لإدخال البيانات -->
+
+<div class="tables">
+  
+  <!-- الجدول لعرض الأعمال المستلمة -->
+  <table>
+    <thead>
+      <tr>
+        <th>نوع القطعة</th>
+        <th>الرقم المرجعي</th>
+        <th>نوع العملية</th>
+        <th>تاريخ العملية</th>
+        <th>إجراءات</th>
+      </tr>
+    </thead>
+    <tbody id="works-table">
+      <!-- سيتم ملء البيانات هنا ديناميكيًا -->
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<!-- المربع الحواري للتسليم -->
+<div class="modal" id="delivery-modal">
+  <h3>تفاصيل تسليم العمل</h3>
+  <textarea id="deliveryDetails"></textarea>
+  <div class="modal-buttons">
+    <button id="confirmDelivery">موافق</button>
+    <button id="cancelDelivery">إلغاء</button>
+  </div>
+</div>
+
+<script>
+const API_URL = 'http://localhost:3000'; // عنوان الخادم
+
+// تحميل البيانات وعرضها في الجدول
+async function loadWorks() {
+  const response = await fetch(`${API_URL}/works`);
+  const works = await response.json();
+  const tableBody = document.getElementById('works-table');
+  tableBody.innerHTML = ''; // إفراغ الجدول قبل الملء
+
+  works.forEach(work => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${work.piece_type}</td>
+      <td>${work.reference_number}</td>
+      <td>${work.operation_type}</td>
+      <td>${work.operation_date}</td>
+      <td>
+        <button onclick="openDeliveryModal(${work.id})">تسليم</button>
+        <button onclick="editWork(${work.id})">تعديل</button>
+        <button onclick="deleteWork(${work.id})">حذف</button>
+      </td>
+    `;
+    tableBody.appendChild(row);
+  });
+}
+
+// إرسال البيانات إلى الخادم عند الحفظ
+document.getElementById('work-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const pieceType = document.getElementById('pieceType').value;
+  const referenceNumber = document.getElementById('referenceNumber').value;
+
+  await fetch(`${API_URL}/works`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      piece_type: pieceType,
+      reference_number: referenceNumber,
+      operation_type: 'استلام',
+      operation_date: new Date().toISOString(),
+    })
+  });
+
+  loadWorks();
+});
+
+// فتح مربع الحوار لإدخال تفاصيل التسليم
+function openDeliveryModal(workId) {
+  const modal = document.getElementById('delivery-modal');
+  modal.classList.add('active');
+
+  document.getElementById('confirmDelivery').onclick = async () => {
+    const deliveryDetails = document.getElementById('deliveryDetails').value;
+
+    await fetch(`${API_URL}/works/${workId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        operation_type: 'تم التسليم',
+        delivery_details: deliveryDetails,
+        delivery_date: new Date().toISOString(),
+      })
+    });
+
+    modal.classList.remove('active');
+    loadWorks();
+  };
+
+  document.getElementById('cancelDelivery').onclick = () => {
+    modal.classList.remove('active');
+  };
+}
+
+// حذف صف
+async function deleteWork(workId) {
+  await fetch(`${API_URL}/works/${workId}`, { method: 'DELETE' });
+  loadWorks();
+}
+
+// عند تحميل الصفحة
+loadWorks();
+</script>
+
+</body>
+</html>

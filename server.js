@@ -60,6 +60,82 @@ const db = new sqlite3.Database("./database.db", (err) => {
     FOREIGN KEY (employee_id) REFERENCES employees(id) ON DELETE CASCADE
 )`);
 
+    //     db.run(`
+    //   CREATE TABLE IF NOT EXISTS receive_works (
+    //     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    //     client_name TEXT NOT NULL,
+    //     work_type TEXT NOT NULL,
+    //     reference_number INTEGER NOT NULL,
+    //     status TEXT NOT NULL,
+    //     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+    //   )
+    // `);
+    // جدول الرقم المرجعي
+    /*     db.run(`
+      CREATE TABLE IF NOT EXISTS receive_work (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        client_name TEXT,
+        work_type TEXT,
+        reference_number INTEGER,
+        status TEXT,
+        date TEXT,
+      )
+    `); */
+
+    /*     // إنشاء جدول استلام الأعمال
+    db.run(
+      `
+  CREATE TABLE IF NOT EXISTS work_receiving (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    client_name TEXT NOT NULL,
+    work_type TEXT NOT NULL,
+    reference_number INTEGER NOT NULL,
+    status TEXT NOT NULL,
+    date TEXT NOT NULL
+  )
+`,
+      (err) => {
+        if (err) {
+          console.error("Error creating work_receiving table:", err.message);
+        } else {
+          console.log("Table 'work_receiving' is ready.");
+        }
+      }
+    ); */
+
+    /*    db.run(`
+    CREATE TABLE IF NOT EXISTS reference_numbers (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    date TEXT NOT NULL UNIQUE,
+    next_reference_number INTEGER DEFAULT 1
+    );
+  `); */
+    //   db.run(`
+    //   CREATE TABLE IF NOT EXISTS reference_number (
+    //     date TEXT PRIMARY KEY,
+    //     number INTEGER NOT NULL
+    //   )
+    // `);
+
+    //   // إدخال رقم مرجعي افتراضي (اختياري)
+    //   db.run(`
+    //   INSERT OR IGNORE INTO reference_number (date, number)
+    //   VALUES (DATE('now'), 1)
+    // `);
+
+    db.run(`
+   CREATE TABLE IF NOT EXISTS works (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    piece_type TEXT NOT NULL,
+    reference_number TEXT NOT NULL,
+    operation_type TEXT NOT NULL, -- "استلام" أو "تم التسليم"
+    operation_date TEXT NOT NULL,
+    delivery_details TEXT,
+    delivery_date TEXT
+);
+
+    `);
+
     console.log("Tables created or verified successfully.");
   }
 });
@@ -147,12 +223,10 @@ app.delete("/api/delete", (req, res) => {
       db.run("VACUUM", (err) => {
         if (err) {
           console.error("Error running VACUUM:", err);
-          res
-            .status(500)
-            .json({
-              message: "حدث خطأ أثناء تحرير المساحة.",
-              error: err.message,
-            });
+          res.status(500).json({
+            message: "حدث خطأ أثناء تحرير المساحة.",
+            error: err.message,
+          });
         } else {
           console.log("Database vacuumed successfully.");
           res.json({ message: "تم حذف جميع البيانات وتحرير المساحة بنجاح." });
@@ -1158,6 +1232,408 @@ app.put("/api/financial-transactions/:id", (req, res) => {
     }
   );
 });
+// ======================================
+// ======================================
+/* app.get("/get-reference-number", async (req, res) => {
+  try {
+    // احصل على الرقم المرجعي الحالي (مثال: احصل عليه من قاعدة البيانات)
+    const today = new Date().toISOString().split("T")[0];
+    let referenceNumber = await db.getReferenceNumber(today);
+
+    if (!referenceNumber) {
+      referenceNumber = 1; // إذا لم يكن موجودًا، ابدأ من 1
+      await db.insertReferenceNumber(today, referenceNumber);
+    }
+
+    res.json({ referenceNumber });
+  } catch (error) {
+    console.error("Error fetching reference number:", error.message);
+    res.status(500).json({ message: "خطأ في جلب الرقم المرجعي" });
+  }
+}); */
+// app.get("/get-reference-number", (req, res) => {
+//   const today = new Date().toISOString().split("T")[0]; // الحصول على تاريخ اليوم (YYYY-MM-DD)
+
+//   // // التحقق من الرقم المرجعي لليوم الحالي
+//   // db.get(
+//   //   "SELECT number FROM reference_number WHERE date = ?",
+//   //   [today],
+//   //   (err, row) => {
+//   //     if (err) {
+//   //       console.error("Error fetching reference number:", err.message);
+//   //       return res.status(500).json({ error: "خطأ في جلب الرقم المرجعي." });
+//   //     }
+
+//   //     if (row) {
+//   //       // إذا كان الرقم موجودًا
+//   //       res.json({ referenceNumber: row.number });
+//   //     } else {
+//   //       // إذا لم يكن موجودًا، نُدخل رقمًا جديدًا
+//   //       db.run(
+//   //         "INSERT INTO reference_number (date, number) VALUES (?, 1)",
+//   //         [today],
+//   //         function (insertErr) {
+//   //           if (insertErr) {
+//   //             console.error(
+//   //               "Error initializing reference number:",
+//   //               insertErr.message
+//   //             );
+//   //             return res
+//   //               .status(500)
+//   //               .json({ error: "خطأ في تهيئة الرقم المرجعي." });
+//   //           }
+
+//   //           res.json({ referenceNumber: 1 }); // الرقم المرجعي الافتراضي
+//   //         }
+//   //       );
+//   //     }
+//   //   }
+//   // );
+
+//   app.get("/get-reference-number", (req, res) => {
+//     db.get(`SELECT reference_number FROM work_reference`, (err, row) => {
+//       if (err) {
+//         console.error("Error fetching reference number:", err.message);
+//         return res.status(500).json({ error: "خطأ في جلب الرقم المرجعي" });
+//       }
+
+//       // تحقق من وجود رقم مرجعي
+//       if (row) {
+//         const currentReference = row.reference_number;
+
+//         // تحديث الرقم المرجعي بزيادته بمقدار 1
+//         db.run(
+//           `UPDATE work_reference SET reference_number = reference_number + 1`,
+//           (updateErr) => {
+//             if (updateErr) {
+//               console.error(
+//                 "Error updating reference number:",
+//                 updateErr.message
+//               );
+//               return res
+//                 .status(500)
+//                 .json({ error: "خطأ في تحديث الرقم المرجعي" });
+//             }
+
+//             // إرسال الرقم المرجعي المحدث
+//             res.json({ referenceNumber: currentReference });
+//           }
+//         );
+//       } else {
+//         // إذا لم يكن هناك رقم مرجعي، قم بإنشائه
+//         db.run(
+//           `INSERT INTO work_reference (reference_number) VALUES (1)`,
+//           (insertErr) => {
+//             if (insertErr) {
+//               console.error(
+//                 "Error inserting initial reference number:",
+//                 insertErr.message
+//               );
+//               return res
+//                 .status(500)
+//                 .json({ error: "خطأ في إنشاء الرقم المرجعي الأول" });
+//             }
+
+//             // إرسال الرقم الأول
+//             res.json({ referenceNumber: 1 });
+//           }
+//         );
+//       }
+//     });
+//   });
+// });
+// نقطة النهاية لجلب الرقم المرجعي
+
+// ======================================
+// app.post("/add-receive-work", async (req, res) => {
+//   try {
+//     const { client_name, work_type, reference_number, status, timestamp } =
+//       req.body;
+
+//     // قم بإضافة العملية إلى قاعدة البيانات
+//     await db.addReceiveWork({
+//       client_name,
+//       work_type,
+//       reference_number,
+//       status,
+//       timestamp,
+//     });
+
+//     // قم بزيادة الرقم المرجعي لليوم الحالي
+//     await db.incrementReferenceNumber(new Date().toISOString().split("T")[0]);
+
+//     res.json({ message: "تمت إضافة العملية بنجاح." });
+//   } catch (error) {
+//     console.error("Error adding receive work:", error.message);
+//     res.status(500).json({ message: "خطأ أثناء إضافة العملية." });
+//   }
+// });
+
+// نقطة النهاية لإضافة استلام عمل جديد
+// app.post("/add-receive-work", (req, res) => {
+//   const { clientName, workType, referenceNumber, status } = req.body;
+
+//   if (!clientName || !workType || !referenceNumber || !status) {
+//     return res.status(400).json({ error: "جميع الحقول مطلوبة" });
+//   }
+
+//   const now = new Date();
+//   const date = now.toISOString().split("T")[0]; // YYYY-MM-DD
+//   const time = now.toTimeString().split(" ")[0]; // HH:MM:SS
+
+//   db.run(
+//     `
+//     INSERT INTO receive_work (client_name, work_type, reference_number, status, date, time)
+//     VALUES (?, ?, ?, ?, ?, ?)
+//   `,
+//     [clientName, workType, referenceNumber, status, date, time],
+//     function (err) {
+//       if (err) {
+//         console.error("Error adding receive work:", err.message);
+//         return res.status(500).json({ error: "خطأ في إضافة استلام العمل" });
+//       }
+
+//       res.json({ message: "تم إضافة استلام العمل بنجاح", id: this.lastID });
+//     }
+//   );
+// });
+
+// app.post("/add-receive-work", (req, res) => {
+//   const { clientName, workType, referenceNumber, status, date } = req.body;
+
+//   if (!clientName || !workType || !referenceNumber || !status || !date) {
+//     return res.status(400).json({ error: "جميع الحقول مطلوبة." });
+//   }
+
+//   const query = `
+//     INSERT INTO work_receiving (client_name, work_type, reference_number, status, date)
+//     VALUES (?, ?, ?, ?, ?)
+//   `;
+
+//   db.run(
+//     query,
+//     [clientName, workType, referenceNumber, status, date],
+//     function (err) {
+//       if (err) {
+//         console.error("Error adding work receiving:", err.message);
+//         return res.status(500).json({ error: "خطأ في إضافة العملية." });
+//       }
+//       res.json({ message: "تمت إضافة العملية بنجاح." });
+//     }
+//   );
+
+// });
+
+// نقطة النهاية لإضافة بيانات استلام الأعمال
+// **************************************8888
+
+// app.post("/add-receive-work", (req, res) => {
+//   const { clientName, workType, referenceNumber, status, date } = req.body;
+
+//   if (!clientName || !workType || !referenceNumber || !status || !date) {
+//     return res.status(400).json({ error: "جميع الحقول مطلوبة." });
+//   }
+
+//   const query = `
+//     INSERT INTO work_receiving (client_name, work_type, reference_number, status, date)
+//     VALUES (?, ?, ?, ?, ?)
+//   `;
+
+//   db.run(
+//     query,
+//     [clientName, workType, referenceNumber, status, date],
+//     function (err) {
+//       if (err) {
+//         console.error("Error adding work receiving:", err.message);
+//         return res.status(500).json({ error: "خطأ أثناء إضافة البيانات." });
+//       }
+
+//       res.json({ message: "تمت إضافة البيانات بنجاح.", id: this.lastID });
+//     }
+//   );
+// });
+
+// ======================================
+// ======================================
+// ======================================
+// استيراد sqlite3
+
+// دالة لاسترجاع الرقم المرجعي وتحديثه
+/* const getReferenceNumber = (callback) => {
+  const today = new Date().toISOString().split("T")[0]; // تاريخ اليوم بصيغة YYYY-MM-DD
+
+  db.get(
+    `SELECT next_reference_number FROM reference_numbers WHERE date = ?`,
+    [today],
+    (err, row) => {
+      if (err) {
+        console.error("Error fetching reference number:", err.message);
+        callback(null, err);
+        return;
+      }
+
+      if (row) {
+        // إذا كان هناك رقم مرجعي لهذا اليوم
+        const currentRef = row.next_reference_number;
+
+        // تحديث الرقم المرجعي ليزيد بمقدار 1
+        db.run(
+          `UPDATE reference_numbers SET next_reference_number = ? WHERE date = ?`,
+          [currentRef + 1, today],
+          (updateErr) => {
+            if (updateErr) {
+              console.error(
+                "Error updating reference number:",
+                updateErr.message
+              );
+              callback(null, updateErr);
+            } else {
+              callback(currentRef);
+            }
+          }
+        );
+      } else {
+        // إذا لم يكن هناك رقم مرجعي لهذا اليوم، إدخال سجل جديد
+        db.run(
+          `INSERT INTO reference_numbers (date, next_reference_number) VALUES (?, ?)`,
+          [today, 2], // الرقم المرجعي الأول هو 1، التالي سيكون 2
+          (insertErr) => {
+            if (insertErr) {
+              console.error(
+                "Error inserting reference number:",
+                insertErr.message
+              );
+              callback(null, insertErr);
+            } else {
+              callback(1); // الرقم المرجعي الأول لهذا اليوم
+            }
+          }
+        );
+      }
+    }
+  );
+};
+
+app.get("/get-reference-number", (req, res) => {
+  getReferenceNumber((referenceNumber, err) => {
+    if (err) {
+      res.status(500).json({ error: "Error fetching reference number." });
+    } else {
+      res.json({ referenceNumber });
+    }
+  });
+});
+
+// ======================================
+app.post("/add-receive-work", (req, res) => {
+  const { clientName, workType, referenceNumber } = req.body;
+  const currentDate = new Date().toISOString();
+
+  db.run(
+    `INSERT INTO work_receiving (client_name, work_type, reference_number, date) VALUES (?, ?, ?, ?)`,
+    [clientName, workType, referenceNumber, currentDate],
+    (err) => {
+      if (err) {
+        console.error("Error adding work receiving:", err.message);
+        res.status(500).json({ error: "Error adding work receiving." });
+      } else {
+        res.json({ message: "تم إضافة العمل بنجاح." });
+      }
+    }
+  );
+});
+ */
+// ======================================
+// ======================================
+// ======================================
+// نقطة النهاية لجلب جميع الأعمال المستلمة
+/* app.get("/get-received-works", (req, res) => {
+  const query = `
+    SELECT id, client_name, work_type, reference_number, status, date
+    FROM work_receiving
+    ORDER BY date DESC
+  `;
+
+  db.all(query, [], (err, rows) => {
+    if (err) {
+      console.error("Error fetching received works:", err.message);
+      return res.status(500).json({ error: "خطأ في جلب الأعمال المستلمة" });
+    }
+
+    res.json(rows); // إرسال البيانات كاستجابة
+  });
+});
+ */
+// ======================================
+// ======================================
+// ======================================
+// ======================================
+// استرجاع جميع الأعمال
+app.get("/works", (req, res) => {
+  db.all("SELECT * FROM works", [], (err, rows) => {
+    if (err) return res.status(500).json(err.message);
+    res.json(rows);
+  });
+});
+
+// إضافة عمل جديد
+app.post("/works", (req, res) => {
+  const { piece_type, reference_number, operation_type, operation_date } =
+    req.body;
+  db.run(
+    `INSERT INTO works (piece_type, reference_number, operation_type, operation_date) VALUES (?, ?, ?, ?)`,
+    [piece_type, reference_number, operation_type, operation_date],
+    function (err) {
+      if (err) return res.status(500).json(err.message);
+      res.json({ id: this.lastID });
+    }
+  );
+});
+
+// تحديث عمل للتسليم
+app.put("/works/:id", (req, res) => {
+  const { operation_type, delivery_details, delivery_date } = req.body;
+  db.run(
+    `UPDATE works SET operation_type = ?, delivery_details = ?, delivery_date = ? WHERE id = ?`,
+    [operation_type, delivery_details, delivery_date, req.params.id],
+    function (err) {
+      if (err) return res.status(500).json(err.message);
+      res.json({ updated: this.changes });
+    }
+  );
+});
+
+// حذف عمل
+app.delete("/works/:id", (req, res) => {
+  db.run(`DELETE FROM works WHERE id = ?`, req.params.id, function (err) {
+    if (err) return res.status(500).json(err.message);
+    res.json({ deleted: this.changes });
+  });
+});
+
+// استرجاع تفاصيل عمل معين
+app.get("/works/:id", (req, res) => {
+  db.get(`SELECT * FROM works WHERE id = ?`, [req.params.id], (err, row) => {
+    if (err) return res.status(500).json(err.message);
+    res.json(row);
+  });
+});
+
+// تحديث نوع القطعة والرقم المرجعي فقط
+app.put("/edit_works/:id", (req, res) => {
+  const { piece_type, reference_number } = req.body;
+  db.run(
+    `UPDATE works SET piece_type = ?, reference_number = ? WHERE id = ?`,
+    [piece_type, reference_number, req.params.id],
+    function (err) {
+      if (err) return res.status(500).json(err.message);
+      res.json({ updated: this.changes });
+    }
+  );
+});
+
+// ======================================
+// ======================================
 // ======================================
 
 app.get("/", (req, res) => {

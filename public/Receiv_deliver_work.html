@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>استلام وتسليم الأعمال</title>
+  <style>
+    /* body { font-family: Arial, sans-serif; margin: 20px; } */
+    /* table { width: 100%; border-collapse: collapse; margin-top: 20px; } */
+    /* table, th, td { border: 1px solid #ddd; text-align: center; } */
+    /* th, td { padding: 10px; } */
+    .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border: 1px solid #ccc; box-shadow: 0px 5px 10px rgba(0,0,0,0.3); }
+    .modal.active { display: block; }
+    .modal-buttons { margin-top: 10px; text-align: right; }
+    button { margin: 5px; }
+  </style>
+  <link rel="stylesheet" href="css/all.min.css">
+  <link rel="stylesheet" href="css/three.css">
+  <link rel="stylesheet" href="css/exching.css">
+
+</head>
+<body>
+<header>
+    <!-- <h1>  معاملات مالية للعملاء <i class="fas fa-file-invoice icon"></i></h1> -->
+<h1>إدارة استلام وتسليم الأعمال</h1>
+   
+<!-- البحث -->
+<div class="search-container">
+    <i class="fas fa-search" onclick="toggleSearch()"></i>
+    <input type="text" id="searchInput" class="search-input" placeholder="ابحث عن رقم مرجعي">
+  </div>
+    <ul>
+        <li id="toggleSidebar"><i class="fa-regular fa-chart-bar fa-fw"></i> <p></p> </li>
+        <li><a href="index.html"> <i class="fa-solid fa-house-chimney"></i> 
+            <p>الرئيسية</p>
+        </a></li>
+        <li>
+            <a href="/workTypes.html">
+                <i class="fa-solid fa-briefcase"></i>
+            <p> إدارة  الأعمال</p>
+            </a>
+        </li>
+        <li>
+            <a href="backup.html">
+               <i class="fa-regular fa-credit-card "></i>
+               <p>النسخ الاحتايطي</p>
+            </a>
+        </li>
+        </ul>
+        <div class="hover">
+            <div class="sidebar">
+              <h3>M_RI_T</h3>
+              <ul>
+                <li>
+                    <a href="add_delete.html">
+                        <i class="fa-solid fa-user-plus"></i>
+                        <span>ادرة العملاء</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="Employees/employee.html">
+                        <i class="fa-regular fa-circle-user fa-fw"></i>
+                        <span>ادرة الموظفين</span>
+                    </a>
+                </li>
+                <li>
+                    <a id="theme-toggle"></a>
+                </li>
+              </ul>
+            </div>
+             </div>
+    </header>
+<div class="container search">
+  <div class="box">
+<!-- النموذج لإدخال البيانات -->
+<form id="work-form">
+ <div class="top">
+  <label>نوع القطعة<p>:</p></label>
+  <input type="text" id="pieceType" required>
+ </div>
+ <div class="center">
+  <label> المرجعي<p>:</p></label>
+  <input type="text" id="referenceNumber" required>
+  
+ </div>
+  <button type="submit">حفظ</button>
+</form>
+</div>
+<div class="tables">
+<!-- الجدول لعرض الأعمال -->
+<table>
+  <thead>
+    <tr>
+      <th>الإجراءات</th>
+      <th> المرجعي</th>
+      <th>نوع القطعة</th>
+      <th>الحاله</th>
+    </tr>
+  </thead>
+  <tbody id="works-table">
+    <!-- سيتم ملء البيانات ديناميكيًا -->
+  </tbody>
+</table>
+</div>
+</div>
+<!-- مربع حوار للمعلومات -->
+<div class="modal edit-box" id="info-modal">
+  <h3>تفاصيل العمل</h3>
+  <p id="infoDetails"></p>
+  <div class="edit-buttons">
+    <button onclick="closeModal('info-modal')">إغلاق</button>
+  </div>
+</div>
+
+<!-- مربع حوار للتعديل -->
+<div class="modal  edit-box" id="edit-modal">
+  <h3>تعديل العمل</h3>
+  <label>نوع القطعة<p>:</p></label>
+  <input type="text" id="editPieceType">
+  <label>  المرجعي <p>:</p></label>
+  <input type="text" id="editReferenceNumber">
+  <div class="modal-buttons edit-buttons">
+    <button id="confirmEdit">حفظ</button>
+    <button onclick="closeModal('edit-modal')">إلغاء</button>
+  </div>
+</div>
+
+<!-- المربع الحواري للتسليم -->
+<div class="modal edit-box" id="delivery-modal">
+  <h3> تسليم العمل</h3>
+  <label for="deliveryDetails"> التفاصيل<p>:</p></label>
+  <input id="deliveryDetails">
+  <div class="modal-buttons edit-buttons">
+    <button id="confirmDelivery">موافق</button>
+    <button id="cancelDelivery">إلغاء</button>
+  </div>
+</div>
+
+<!-- مربع حوار للتأكيد على الحذف -->
+<div class="modal" id="delete-modal">
+    <h3>هل تريد حذف العمل؟</h3>
+    <div class="modal-buttons">
+      <button id="confirmDelete">تأكيد</button>
+      <button onclick="closeModal('delete-modal')">إلغاء</button>
+    </div>
+  </div>
+  
+  <!-- رسالة نجاح الحذف -->
+  <div id="success-message" style="display: none; color: green; margin-top: 10px;">تم الحذف بنجاح!</div>
+  
+<script>
+const API_URL = 'http://localhost:3000'; // عنوان الخادم
+// تحميل البيانات وعرضها في الجدول
+async function loadWorks(filter = '') {
+  const response = await fetch(`${API_URL}/works`);
+  let works = await response.json();
+
+  // تطبيق الفلترة إذا كان هناك بحث
+  if (filter) {
+    works = works.filter(work => work.reference_number.includes(filter));
+  }
+
+  const tableBody = document.getElementById('works-table');
+  tableBody.innerHTML = ''; // إفراغ الجدول قبل الملء
+
+  works.forEach(work => {
+    
+    const row = document.createElement('tr');
+    const status = work.operation_type === "تم التسليم" ? 
+    `<span class="fnsh-icon"><i class="fa-solid fa-check"></i></span>` :
+    `<span class="delivery-icon" onclick="openDeliveryModal(${work.id})"><i class="fa-solid fa-right-from-bracket"></i></span>`;
+
+    row.innerHTML = `
+          <td>
+        <span class="delete-icon" onclick="deleteWork(${work.id})"><i class="fa-regular fa-trash-can delete"></i></span>
+        <span class="info-icon" onclick="showInfo(${work.id})"><i class="fa-solid fa-circle-info"></i></span>
+        <span class="edit-icon" onclick="openEditModal(${work.id}, '${work.piece_type}', '${work.reference_number}')"><i class="fa-solid fa-pen"></i></span>
+      </td>
+      <td>${work.reference_number}</td>
+      <td>${work.piece_type}</td>
+      <td>${status}</td>
+
+    `;
+    tableBody.appendChild(row);
+  });
+}
+/* 
+        <span class="delete-icon" onclick="deleteWork(${work.id})"><i class="fa-solid fa-check"></i></span>
+
+        <button onclick="showInfo(${work.id})">معلومات</button>
+        <button onclick="openEditModal(${work.id}, '${work.piece_type}', '${work.reference_number}')">تعديل</button>
+        <button onclick="deleteWork(${work.id})">حذف</button>
+        <button onclick="openDeliveryModal(${work.id})">تسليم</button> */
+// إرسال البيانات إلى الخادم عند الحفظ
+document.getElementById('work-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const pieceType = document.getElementById('pieceType').value;
+  const referenceNumber = document.getElementById('referenceNumber').value;
+
+  await fetch(`${API_URL}/works`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      piece_type: pieceType,
+      reference_number: referenceNumber,
+      operation_type: 'استلام',
+      operation_date: new Date().toISOString(),
+    })
+  });
+
+  loadWorks();
+});
+
+// إظهار المعلومات في مربع حوار
+async function showInfo(workId) {
+  const response = await fetch(`${API_URL}/works/${workId}`);
+  const work = await response.json();
+
+  const details = `
+    <strong>تاريخ الاستلام:</strong><span> ${new Date(work.operation_date).toLocaleDateString()}</span><br>
+    <strong>تاريخ التسليم:</strong><span> ${work.delivery_date ? new Date(work.delivery_date).toLocaleDateString() : 'لم يتم التسليم'}</span><br>
+    <strong>تفاصيل التسليم:</strong><span> ${work.delivery_details || 'لا توجد تفاصيل'}</span>
+  `;
+
+  document.getElementById('infoDetails').innerHTML = details;
+  document.getElementById('info-modal').classList.add('active');
+}
+
+// فتح مربع التعديل
+function openEditModal(workId, pieceType, referenceNumber) {
+  document.getElementById('editPieceType').value = pieceType;
+  document.getElementById('editReferenceNumber').value = referenceNumber;
+
+  const confirmButton = document.getElementById('confirmEdit');
+  confirmButton.onclick = async () => {
+    const updatedPieceType = document.getElementById('editPieceType').value;
+    const updatedReferenceNumber = document.getElementById('editReferenceNumber').value;
+
+    await fetch(`${API_URL}/edit_works/${workId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        piece_type: updatedPieceType,
+        reference_number: updatedReferenceNumber,
+      })
+
+    });
+
+    closeModal('edit-modal');
+    loadWorks();
+  };
+
+  document.getElementById('edit-modal').classList.add('active');
+}
+
+// فتح مربع الحوار لإدخال تفاصيل التسليم
+function openDeliveryModal(workId) {
+  const modal = document.getElementById('delivery-modal');
+  modal.classList.add('active');
+
+  document.getElementById('confirmDelivery').onclick = async () => {
+    const deliveryDetails = document.getElementById('deliveryDetails').value;
+
+    await fetch(`${API_URL}/works/${workId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        operation_type: 'تم التسليم',
+        delivery_details: deliveryDetails,
+        delivery_date: new Date().toISOString(),
+      })
+    });
+
+    modal.classList.remove('active');
+    loadWorks();
+  };
+
+  document.getElementById('cancelDelivery').onclick = () => {
+    modal.classList.remove('active');
+  };
+}
+
+
+// إغلاق مربع حوار
+function closeModal(modalId) {
+  document.getElementById(modalId).classList.remove('active');
+}
+
+// حذف صف
+async function deleteWork(workId) {
+  await fetch(`${API_URL}/works/${workId}`, { method: 'DELETE' });
+  loadWorks();
+}
+
+// عند تحميل الصفحة
+loadWorks();
+</script>
+<script>
+
+// تطبيق الفلترة إذا كان هناك بحث
+
+  // البحث عند إدخال نص في الحقل
+function toggleSearch() {
+  const searchInput = document.getElementById('searchInput');
+  searchInput.style.display = searchInput.style.display === 'none' ? 'inline-block' : 'none';
+  searchInput.focus();
+
+  searchInput.oninput = () => {
+    loadWorks(searchInput.value);
+  };
+}
+</script>
+</body>
+</html>
