@@ -1,11 +1,12 @@
 {
-  "version": "1.2.1",
+  "version": "1.2.2",
   "files": [
 
     {
       "path": "server.js",
       "url": "https://raw.githubusercontent.com/MritAseed/MRIT/refs/heads/main/server.js"
     },
+
     {
       "path": "public/index.html",
       "url": "https://raw.githubusercontent.com/MritAseed/MRIT/refs/heads/main/public/index.html"
@@ -41,6 +42,10 @@
     {
       "path": "public/exching.html",
       "url": "https://raw.githubusercontent.com/MritAseed/MRIT/refs/heads/main/public/exching.html"
+    },
+    {
+      "path": "public/mjmj.html",
+      "url": "https://raw.githubusercontent.com/MritAseed/MRIT/refs/heads/main/public/mjmj.html"
     },
     {
       "path": "public/css/three.css",

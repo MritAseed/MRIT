@@ -3,34 +3,35 @@
 }
 
 .employee .box {
-    width: 80%;
-    align-items: flex-start;
+    width: 90%;
+    margin-left: 0;
     position: relative;
 }
-.employee .box .box_inp {
-    width: 60%;
+.employee .box .form {
     height: 100%;
-    display: flex;
+}
+.employee .box .box_inp {
+    width: 65%;
+    height: 100%;
+    display: flex
+;
+    justify-content: flex-start;
     align-items: flex-start;
     flex-wrap: wrap;
 }
 .employee .box  label {
-    width: 26%;
-    padding-right: 10px;
-    margin-left: 12px;
-    margin-bottom: 0;
-    text-align: center;
-}
-.employee .box input {
-    width: 40%;
-    background-color: var(--background-color);
-    margin-left: 20%;
-    border-radius: 6px;
-    border: 2px solid var(--back-button-color);
-    padding: 6px 5px;
-    outline: none;
+    width: 25%;
 }
 .employee .box .lister {
+    width: 65%;
+}
+.employee .box .lister input {
+    width: 100%;
+}
+.employee .box input {
+    width: 65%;
+}
+/* .employee .box .lister {
     position: relative;
     width: 60%;
     margin-bottom: 10%;
@@ -45,8 +46,10 @@
     z-index: 3;
     margin-left: 0%;
     width: 100%;
-}
-.employee .lister .autocomplete {
+} */
+
+
+/* .employee .lister .autocomplete {
     position: absolute;
     z-index: 2;
     max-height: 100px;
@@ -79,7 +82,7 @@
     font-size: 14px;
     font-weight: 600;
     padding: 4px;
-}
+} */
 
 .employee .box .poTyp {
     width: 37%;
@@ -96,7 +99,7 @@
     width: 100%;
     font-size: 16px;
     font-weight: 800;
-    margin-left: 0;
+    margin: 0;
     margin-bottom: 20%;
     padding: 10px 0;
     background-color: var(--background-color);
@@ -104,6 +107,7 @@
     border: 2px solid var(--back-button-color);
     border-top-left-radius: 8px;
     text-align: center;
+    border-bottom-width: 3px;
 }
 .employee .poTyp .radio-group {
     width: 90%;

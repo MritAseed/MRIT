@@ -53,31 +53,37 @@
   </div>
     </header>
     <div class="container  employee">
+
         <div class="box">
-            <!-- إدخال تفاصيل العملية المالية -->
-          <div class="form-section box_inp">
-              <label for="employee-name">اسم الموظف<p>:</p></label>
-              <div class="lister">
-                  <input type="text" id="employee-name" placeholder="أدخل اسم الموظف">
-                  <div id="employee-list" class="autocomplete"></div>
-              </div>           
-              <label for="operation-details">تفاصيل العملية<p>:</p></label>
-              <textarea id="operation-details" placeholder="أدخل تفاصيل العملية"></textarea>
-              <label for="amount">المبلغ<p>:</p></label>
-              <input type="number" id="amount" placeholder="أدخل المبلغ" step="0.01">
-        </div>
-          <!-- اختيار نوع العملية -->
+  <div class="form">
+              <!-- إدخال تفاصيل العملية المالية -->
+              <div class="form-section box_inp">
+                <label for="employee-name">اسم الموظف<p>:</p></label>
 
-                <div class="operation-type poTyp">
-            <label class="lpchild">نوع العملية</label>
-            <div class="options radio-group">
-                <div class="option deposit" onclick="selectOperation('deposit')"> اضافة اجور</div>
-                <div class="option withdraw" onclick="selectOperation('withdraw')">  تسليم اجور</div>
-            </div>
-            <button class="save-btn" onclick="saveOperation()">حفظ العملية</button>
+                <div class="lister">
+                    <input type="text" id="employee-name" >
+                    <div id="employee-list" class="autocomplete"></div>
+                </div>           
+                
+                <label for="operation-details">التفاصيل <p>:</p></label>
+                <!-- <textarea id="operation-details" placeholder="أدخل تفاصيل العملية"></textarea> -->
+                 <input type="text" id="operation-details">
+                <label for="amount">المبلغ<p>:</p></label>
+                <input type="number" id="amount" step="0.01">
+          </div>
+        <!-- اختيار نوع العملية -->
 
-        </div>
-      </div>
+              <div class="operation-type poTyp">
+          <label class="lpchild">نوع العملية</label>
+          <div class="options radio-group">
+              <div class="option deposit" onclick="selectOperation('deposit')"> اضافة اجور</div>
+              <div class="option withdraw" onclick="selectOperation('withdraw')">  تسليم اجور</div>
+          </div>
+          <button class="save-btn" onclick="saveOperation()">حفظ العملية</button>
+
+              </div>
+    </div>
+  </div>
     </div>
      <!--  تحميل التفضيل عند تحميل الصفحة + اضهار الجز الجانبي-->
  <script>

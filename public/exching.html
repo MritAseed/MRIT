@@ -5,14 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>استلام وتسليم الأعمال</title>
   <style>
-    /* body { font-family: Arial, sans-serif; margin: 20px; } */
-    /* table { width: 100%; border-collapse: collapse; margin-top: 20px; } */
-    /* table, th, td { border: 1px solid #ddd; text-align: center; } */
-    /* th, td { padding: 10px; } */
     .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border: 1px solid #ccc; box-shadow: 0px 5px 10px rgba(0,0,0,0.3); }
     .modal.active { display: block; }
     .modal-buttons { margin-top: 10px; text-align: right; }
-    button { margin: 5px; }
   </style>
   <link rel="stylesheet" href="css/all.min.css">
   <link rel="stylesheet" href="css/three.css">
@@ -137,9 +132,9 @@
 </div>
 
 <!-- مربع حوار للتأكيد على الحذف -->
-<div class="modal" id="delete-modal">
+<div class="modal dialog-box" id="delete-modal">
     <h3>هل تريد حذف العمل؟</h3>
-    <div class="modal-buttons">
+    <div class="modal-buttons edit-buttons">
       <button id="confirmDelete">تأكيد</button>
       <button onclick="closeModal('delete-modal')">إلغاء</button>
     </div>
@@ -217,17 +212,19 @@ async function showInfo(workId) {
   const work = await response.json();
 
   const details = `
-    <strong>تاريخ الاستلام:</strong><span> ${new Date(work.operation_date).toLocaleDateString()}</span><br>
-    <strong>تاريخ التسليم:</strong><span> ${work.delivery_date ? new Date(work.delivery_date).toLocaleDateString() : 'لم يتم التسليم'}</span><br>
-    <strong>تفاصيل التسليم:</strong><span> ${work.delivery_details || 'لا توجد تفاصيل'}</span>
+    <strong>تاريخ الاستلام <p>:</p></strong><span> ${new Date(work.operation_date).toLocaleDateString()}</span><br>
+    <strong>تاريخ التسليم<p>:</p></strong><span> ${work.delivery_date ? new Date(work.delivery_date).toLocaleDateString() : 'لم يتم التسليم'}</span><br>
+    <strong>تفاصيل التسليم <p>:</p></strong><span> ${work.delivery_details || 'لا توجد تفاصيل'}</span>
   `;
 
   document.getElementById('infoDetails').innerHTML = details;
   document.getElementById('info-modal').classList.add('active');
 }
-
+// إغلاق مربع حوار
+function closeModal(modalId) {
+  document.getElementById(modalId).classList.remove('active');
+}
 // فتح مربع التعديل
-
 function openEditModal(workId, pieceType, referenceNumber) {
   document.getElementById('editPieceType').value = pieceType;
   document.getElementById('editReferenceNumber').value = referenceNumber;
@@ -260,7 +257,6 @@ function openEditModal(workId, pieceType, referenceNumber) {
 
   document.getElementById('edit-modal').classList.add('active');
 }
-
 
  // فتح مربع الحوار لإدخال تفاصيل التسليم
  function openDeliveryModal(workId) {
@@ -299,21 +295,6 @@ function openEditModal(workId, pieceType, referenceNumber) {
   };
 }
 
-// إغلاق مربع حوار
-function closeModal(modalId) {
-  document.getElementById(modalId).classList.remove('active');
-}
-
-// // حذف صف
-// async function deleteWork(workId) {
-//   await fetch(`${API_URL}/works/${workId}`, { method: 'DELETE' });
-//   loadWorks();
-// }
-
-// عند تحميل الصفحة
-loadWorks();
-</script>
-<script>
 let workIdToDelete = null; // لتخزين ID العمل الذي سيتم حذفه
 
 // فتح مربع الحوار لتأكيد الحذف
@@ -336,10 +317,16 @@ document.getElementById('confirmDelete').onclick = async () => {
 };
 
 
-// إغلاق مربع الحوار
-function closeModal(modalId) {
-  document.getElementById(modalId).classList.remove('active');
-}
+// عند تحميل الصفحة
+loadWorks();
+</script>
+<script>
+
+
+// // إغلاق مربع الحوار
+// function closeModal(modalId) {
+//   document.getElementById(modalId).classList.remove('active');
+// }
 
 // تطبيق الفلترة إذا كان هناك بحث
 

@@ -362,7 +362,8 @@ input {
     background-color: var(--background-color);
     border-top: none;
 }
-.lister .autocomplete-item:first-child {
+.lister .autocomplete-item:first-child,
+.lister .autocomplete .employee-item {
   padding-top: 5px;
 }
 .lister .autocomplete .autocomplete-item:hover,
@@ -437,7 +438,7 @@ input {
   align-items: center;
   z-index: 500;
 }
-.edit-box {
+.edit-box, .dialog-box {
   padding: 10px;
   border-radius: 10px;
   width: 400px;
@@ -522,13 +523,13 @@ h3 span {
     margin: 0 10px;
 font-size: 14px;
 }
-table tbody tr td:first-child span {
+/* table tbody tr td:first-child span {
   color: white;
   transition: 0.3s;
   cursor: pointer;
   margin: 0 10%;
   font-size: 14px;
-}
+} */
 .edit-icon:hover {
   color: #FF9800;
   font-size: 14.2px;
